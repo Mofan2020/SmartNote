@@ -25,6 +25,7 @@ class AppState: ObservableObject {
     let storageService = StorageService()
     let speechService = SpeechService.shared
     let learningAnalysisService = LearningAnalysisService.shared
+    let notificationService = NotificationService.shared
     var llmService: LLMService
     
     var llmConfiguration: LLMConfiguration {

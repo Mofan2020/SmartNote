@@ -36,12 +36,14 @@
 		E5FE28187FFF047A3A7D2AFE /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8589B9024F0431513B5331FE /* FlowLayout.swift */; };
 		E6313AD984EC773F2474EF1D /* AIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BF99288F70ED636D3AAB01 /* AIChatView.swift */; };
 		ED76B8DD4128726DB1ECE13A /* ReviewPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3227CDBCFE8A5C9B904F8 /* ReviewPlanView.swift */; };
+		EF6FDF917407F1948B782F62 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A74D231E413B5F996B5308 /* NotificationService.swift */; };
 		F78AE3270A4A3B1DD86BEB27 /* LLMService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3552CF8976544956A158CCD /* LLMService.swift */; };
 		FD26ECDCB88D37EA644DDA79 /* FileImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270C3E3C779EA0B469949129 /* FileImportView.swift */; };
 		FF6F66BF60F7910C14210550 /* LearningProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E7459E7FE5DC39CDD074EA /* LearningProfileSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01A74D231E413B5F996B5308 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		0E57E6AD3AF6399A1E7F4E50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		12987FCC65DCD2D306F5CCB3 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		183A64BA18C98E763E093D8C /* UserLearningProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLearningProfile.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				C1CBA1BA3BF23D2680740DCD /* KeywordExtractionService.swift */,
 				EDECE7F741B10883BAD49248 /* LearningAnalysisService.swift */,
 				F3552CF8976544956A158CCD /* LLMService.swift */,
+				01A74D231E413B5F996B5308 /* NotificationService.swift */,
 				CCEEF4F30835C4BD18D390FD /* OCRService.swift */,
 				EE1E56D223E7A85D761A70BA /* PDFService.swift */,
 				3157E15A32FE4D1A505F6ED5 /* SpeechService.swift */,
@@ -300,6 +303,7 @@
 				3892090038E102693EDA7002 /* MarkdownView.swift in Sources */,
 				E38E22182C6E3505A22E7BCF /* MaterialDetailView.swift in Sources */,
 				86654172C280D417E594730D /* MaterialsListView.swift in Sources */,
+				EF6FDF917407F1948B782F62 /* NotificationService.swift in Sources */,
 				BDE72A44A8EEA5D1556594A4 /* OCRService.swift in Sources */,
 				5A11D0F9260737C7E1A00140 /* PDFService.swift in Sources */,
 				560180335971D299A12416BE /* ReviewPlan.swift in Sources */,

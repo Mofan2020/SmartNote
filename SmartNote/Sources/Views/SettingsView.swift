@@ -53,6 +53,30 @@ struct SettingsView: View {
                 Toggle("启用日历同步", isOn: $settings.calendarIntegrationEnabled)
                 Toggle("启用提醒事项", isOn: $settings.reminderEnabled)
                 
+                Toggle("每日学习通知", isOn: Binding(
+                    get: { appState.notificationService.dailyNotificationEnabled },
+                    set: { newValue in
+                        Task {
+                            await appState.notificationService.setDailyNotification(enabled: newValue)
+                        }
+                    }
+                ))
+                
+                if appState.notificationService.dailyNotificationEnabled {
+                    DatePicker(
+                        "通知时间",
+                        selection: Binding(
+                            get: { appState.notificationService.notificationTime },
+                            set: { newValue in
+                                Task {
+                                    await appState.notificationService.updateNotificationTime(newValue)
+                                }
+                            }
+                        ),
+                        displayedComponents: .hourAndMinute
+                    )
+                }
+                
                 Stepper("默认学习时长: \(settings.defaultStudyMinutes) 分钟", 
                        value: $settings.defaultStudyMinutes,
                        in: 15...120,

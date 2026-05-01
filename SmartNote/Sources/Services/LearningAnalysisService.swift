@@ -80,6 +80,16 @@ class LearningAnalysisService: ObservableObject {
     private func performAnalysis() async {
         guard currentProfile.isEnabled else { return }
         
+        let config = StorageService().loadSettings().llmConfiguration
+        guard config.enabled else {
+            await MainActor.run {
+                isAnalyzing = false
+            }
+            return
+        }
+        
+        let currentLLMService = LLMService(configuration: config)
+        
         await MainActor.run {
             isAnalyzing = true
         }
@@ -92,7 +102,7 @@ class LearningAnalysisService: ObservableObject {
             
             var analysisResult = ""
             
-            try await llmService.sendMessageStreaming(system: "你是一个专业的学习分析师，请根据用户的学习数据进行分析并以JSON格式返回结果。", user: prompt) { chunk in
+            try await currentLLMService.sendMessageStreaming(system: "你是一个专业的学习分析师，请根据用户的学习数据进行分析并以JSON格式返回结果。", user: prompt) { chunk in
                 analysisResult += chunk
             }
             
