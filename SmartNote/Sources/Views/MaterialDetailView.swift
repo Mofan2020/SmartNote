@@ -12,6 +12,7 @@ struct MaterialDetailView: View {
     @State private var isEditingCategory = false
     @State private var isEditingKeywords = false
     @State private var isEditingName = false
+    @State private var showMarkdownPreview = false
     @State private var editedName: String = ""
     @State private var editedCategory: MaterialCategory = .other
     @State private var editedKeywords: String = ""
@@ -217,6 +218,10 @@ struct MaterialDetailView: View {
                     .font(.caption)
                     .foregroundColor(.green)
                 
+                Toggle("预览", isOn: $showMarkdownPreview)
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                
                 if material.type == .image && material.extractedText == nil {
                     Button {
                         performOCR()
@@ -232,21 +237,38 @@ struct MaterialDetailView: View {
                 }
             }
             
-            TextEditor(text: $extractedText)
-                .font(.body)
+            if showMarkdownPreview && !extractedText.isEmpty {
+                ScrollView {
+                    MarkdownText(extractedText)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
                 .frame(minHeight: 150)
-                .padding(4)
                 .background(Color(nsColor: .textBackgroundColor))
                 .cornerRadius(8)
-                .onChange(of: extractedText) { newValue in
-                    autoSaveContent(newValue)
-                }
+            } else {
+                TextEditor(text: $extractedText)
+                    .font(.body)
+                    .frame(minHeight: 150)
+                    .padding(4)
+                    .background(Color(nsColor: .textBackgroundColor))
+                    .cornerRadius(8)
+                    .onChange(of: extractedText) { newValue in
+                        autoSaveContent(newValue)
+                    }
+            }
             
             HStack {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
                     .font(.caption)
                 Text("\(extractedText.count) 字符")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Text("支持 Markdown 格式")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

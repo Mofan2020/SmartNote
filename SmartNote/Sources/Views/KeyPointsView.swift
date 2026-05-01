@@ -215,6 +215,7 @@ struct AIAnalysisSheet: View {
     let material: StudyMaterial
     @State private var analysisType: AIAnalysisType = .keyPoints
     @State private var showSavePanel = false
+    @State private var showMarkdownPreview = true
     
     enum AIAnalysisType: String, CaseIterable {
         case keyPoints = "核心考点"
@@ -287,6 +288,9 @@ struct AIAnalysisSheet: View {
                             Text("分析结果")
                                 .font(.headline)
                             Spacer()
+                            Toggle("预览", isOn: $showMarkdownPreview)
+                                .toggleStyle(.switch)
+                                .controlSize(.small)
                             Button {
                                 saveAsPDF()
                             } label: {
@@ -294,13 +298,24 @@ struct AIAnalysisSheet: View {
                             }
                             .buttonStyle(.bordered)
                         }
-                        Text(appState.aiAnalysisResult)
-                            .font(.body)
-                            .textSelection(.enabled)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        if showMarkdownPreview {
+                            ScrollView {
+                                MarkdownText(appState.aiAnalysisResult)
+                                    .padding()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                             .background(Color(nsColor: .textBackgroundColor))
                             .cornerRadius(8)
+                        } else {
+                            Text(appState.aiAnalysisResult)
+                                .font(.system(.body, design: .monospaced))
+                                .textSelection(.enabled)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(nsColor: .textBackgroundColor))
+                                .cornerRadius(8)
+                        }
                     }
                 }
                 .padding()
