@@ -11,6 +11,8 @@ struct MaterialDetailView: View {
     @State private var isExtractingKeywords = false
     @State private var isEditingCategory = false
     @State private var isEditingKeywords = false
+    @State private var isEditingName = false
+    @State private var editedName: String = ""
     @State private var editedCategory: MaterialCategory = .other
     @State private var editedKeywords: String = ""
     @State private var showExportMenu = false
@@ -49,8 +51,49 @@ struct MaterialDetailView: View {
                 .foregroundColor(.accentColor)
             
             VStack(alignment: .leading, spacing: 2) {
-                Text(material.name)
-                    .font(.headline)
+                if isEditingName {
+                    HStack(spacing: 4) {
+                        TextField("资料名称", text: $editedName)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: 200)
+                            .onSubmit {
+                                saveName()
+                            }
+                        
+                        Button {
+                            saveName()
+                        } label: {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                        }
+                        .buttonStyle(.plain)
+                        
+                        Button {
+                            isEditingName = false
+                            editedName = material.name
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.red)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                } else {
+                    HStack {
+                        Text(material.name)
+                            .font(.headline)
+                        
+                        Button {
+                            editedName = material.name
+                            isEditingName = true
+                        } label: {
+                            Image(systemName: "pencil")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                
                 Text(material.type.rawValue)
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -291,6 +334,16 @@ struct MaterialDetailView: View {
             Spacer()
         }
         .padding()
+    }
+    
+    private func saveName() {
+        guard !editedName.isEmpty else { return }
+        if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
+            appState.materials[index].name = editedName
+            material = appState.materials[index]
+            appState.storageService.saveMaterials(appState.materials)
+        }
+        isEditingName = false
     }
     
     private func toggleFavorite() {

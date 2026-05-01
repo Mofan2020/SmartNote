@@ -38,10 +38,8 @@ struct KeyPointsView: View {
             }
         }
         .sheet(isPresented: $showAIAnalysis) {
-            if let material = currentMaterial {
-                AIAnalysisSheet(material: material)
-                    .environmentObject(appState)
-            }
+            AIAnalysisSheetWrapper(materialID: selectedMaterialID)
+                .environmentObject(appState)
         }
         .onAppear {
             if let id = selectedMaterialID,
@@ -387,6 +385,32 @@ struct AIAnalysisSheet: View {
                     }
                 }
             }
+        }
+    }
+}
+
+struct AIAnalysisSheetWrapper: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+    let materialID: UUID?
+    
+    private var material: StudyMaterial? {
+        guard let id = materialID else { return nil }
+        return appState.materials.first { $0.id == id }
+    }
+    
+    var body: some View {
+        if let material = material {
+            AIAnalysisSheet(material: material)
+        } else {
+            VStack {
+                Text("请先选择一份资料")
+                    .foregroundColor(.secondary)
+                Button("关闭") {
+                    dismiss()
+                }
+            }
+            .frame(width: 550, height: 500)
         }
     }
 }
