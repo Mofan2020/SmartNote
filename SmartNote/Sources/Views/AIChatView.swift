@@ -190,6 +190,7 @@ struct ChatMessage: Identifiable, Equatable {
 
 struct ChatMessageView: View {
     let message: ChatMessage
+    @State private var showRawText = false
     
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -204,13 +205,30 @@ struct ChatMessageView: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(message.role == .user ? "你" : "AI 助手")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                HStack {
+                    Text(message.role == .user ? "你" : "AI 助手")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    if message.role == .system {
+                        Toggle("源码", isOn: $showRawText)
+                            .toggleStyle(.switch)
+                            .controlSize(.mini)
+                    }
+                }
                 
-                Text(message.content)
-                    .font(.body)
-                    .textSelection(.enabled)
+                if showRawText || message.role == .user {
+                    Text(message.content)
+                        .font(.body)
+                        .textSelection(.enabled)
+                } else {
+                    ScrollView {
+                        MarkdownText(message.content)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
             }
             
             Spacer()
