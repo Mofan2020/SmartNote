@@ -58,6 +58,10 @@ struct SidebarView: View {
                 NavigationLink(value: 6) {
                     Label("复习计划", systemImage: "calendar.badge.clock")
                 }
+                
+                NavigationLink(value: 8) {
+                    Label("AI 对话", systemImage: "bubble.left.and.bubble.right.fill")
+                }
             }
             
             Section("统计") {
@@ -94,6 +98,8 @@ struct DetailView: View {
                 ReviewPlanView()
             case 7:
                 StatisticsView()
+            case 8:
+                AIChatView()
             default:
                 MaterialsListView()
             }

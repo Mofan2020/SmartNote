@@ -192,6 +192,7 @@ struct AIAnalysisSheet: View {
     @Environment(\.dismiss) var dismiss
     let material: StudyMaterial?
     @State private var analysisType: AIAnalysisType = .keyPoints
+    @State private var showSavePanel = false
     
     enum AIAnalysisType: String, CaseIterable {
         case keyPoints = "核心考点"
@@ -259,8 +260,17 @@ struct AIAnalysisSheet: View {
                         
                         if !appState.aiAnalysisResult.isEmpty {
                             Divider()
-                            Text("分析结果")
-                                .font(.headline)
+                            HStack {
+                                Text("分析结果")
+                                    .font(.headline)
+                                Spacer()
+                                Button {
+                                    saveAsPDF(material: material)
+                                } label: {
+                                    Label("保存 PDF", systemImage: "square.and.arrow.down")
+                                }
+                                .buttonStyle(.bordered)
+                            }
                             Text(appState.aiAnalysisResult)
                                 .font(.body)
                                 .textSelection(.enabled)
@@ -278,7 +288,7 @@ struct AIAnalysisSheet: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .frame(width: 500, height: 450)
+        .frame(width: 550, height: 500)
     }
     
     private func performAIAnalysis(material: StudyMaterial, type: AIAnalysisType) {
@@ -301,6 +311,59 @@ struct AIAnalysisSheet: View {
                     await MainActor.run {
                         appState.errorMessage = error.localizedDescription
                         appState.showError = true
+                    }
+                }
+            }
+        }
+    }
+    
+    private func saveAsPDF(material: StudyMaterial) {
+        guard !appState.aiAnalysisResult.isEmpty else { return }
+        
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [.pdf]
+        
+        let defaultName: String
+        switch analysisType {
+        case .keyPoints:
+            defaultName = "\(material.name)_考点分析.pdf"
+        case .summary:
+            defaultName = "\(material.name)_内容总结.pdf"
+        case .questions:
+            defaultName = "\(material.name)_复习题目.pdf"
+        }
+        
+        savePanel.nameFieldStringValue = defaultName
+        
+        savePanel.begin { response in
+            if response == .OK, let url = savePanel.url {
+                let keywords = material.keywords ?? []
+                var pdfURL: URL?
+                
+                switch analysisType {
+                case .keyPoints, .summary:
+                    pdfURL = PDFService.generateSummaryPDF(
+                        content: appState.aiAnalysisResult,
+                        title: material.name,
+                        subject: material.category.rawValue,
+                        keywords: keywords
+                    )
+                case .questions:
+                    pdfURL = PDFService.generateQuestionsPDF(
+                        questions: appState.aiAnalysisResult,
+                        title: material.name,
+                        subject: material.category.rawValue
+                    )
+                }
+                
+                if let pdfURL = pdfURL {
+                    do {
+                        if FileManager.default.fileExists(atPath: url.path) {
+                            try FileManager.default.removeItem(at: url)
+                        }
+                        try FileManager.default.copyItem(at: pdfURL, to: url)
+                    } catch {
+                        print("Error saving PDF: \(error)")
                     }
                 }
             }

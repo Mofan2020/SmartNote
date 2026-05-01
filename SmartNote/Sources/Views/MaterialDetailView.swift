@@ -1,4 +1,6 @@
 import SwiftUI
+import PDFKit
+import AppKit
 
 struct MaterialDetailView: View {
     @EnvironmentObject var appState: AppState
@@ -7,6 +9,13 @@ struct MaterialDetailView: View {
     @State private var extractedText: String = ""
     @State private var isProcessingOCR = false
     @State private var isExtractingKeywords = false
+    @State private var isEditingCategory = false
+    @State private var isEditingText = false
+    @State private var isEditingKeywords = false
+    @State private var editedCategory: MaterialCategory = .other
+    @State private var editedText: String = ""
+    @State private var editedKeywords: String = ""
+    @State private var showExportMenu = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -27,7 +36,13 @@ struct MaterialDetailView: View {
             
             footerView
         }
-        .frame(width: 600, height: 700)
+        .frame(width: 650, height: 750)
+        .onAppear {
+            extractedText = material.extractedText ?? material.content
+            editedCategory = material.category
+            editedText = extractedText
+            editedKeywords = material.keywords?.joined(separator: ", ") ?? ""
+        }
     }
     
     private var headerView: some View {
@@ -46,6 +61,41 @@ struct MaterialDetailView: View {
             
             Spacer()
             
+            Menu {
+                Button {
+                    exportAsPDF()
+                } label: {
+                    Label("导出为 PDF", systemImage: "doc.fill")
+                }
+                
+                Button {
+                    exportAsText()
+                } label: {
+                    Label("导出为文本", systemImage: "doc.plaintext")
+                }
+                
+                Divider()
+                
+                Button {
+                    copyToClipboard()
+                } label: {
+                    Label("复制内容", systemImage: "doc.on.clipboard")
+                }
+                
+                if let url = material.localURL {
+                    Divider()
+                    
+                    Button {
+                        NSWorkspace.shared.open(url)
+                    } label: {
+                        Label("打开原文件", systemImage: "arrow.up.forward.app")
+                    }
+                }
+            } label: {
+                Label("导出", systemImage: "square.and.arrow.up")
+            }
+            .menuStyle(.borderlessButton)
+            
             if material.isFavorite {
                 Button {
                     toggleFavorite()
@@ -61,14 +111,25 @@ struct MaterialDetailView: View {
     
     private var materialInfoSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("资料信息", systemImage: "info.circle")
-                .font(.headline)
+            HStack {
+                Label("资料信息", systemImage: "info.circle")
+                    .font(.headline)
+                
+                Spacer()
+                
+                Button {
+                    isEditingCategory = true
+                } label: {
+                    Label("编辑分类", systemImage: "pencil")
+                }
+                .buttonStyle(.bordered)
+            }
             
             LazyVGrid(columns: [
                 GridItem(.flexible()),
                 GridItem(.flexible())
             ], spacing: 12) {
-                InfoItem(title: "分类", value: material.category.rawValue)
+                InfoItem(title: "当前分类", value: material.category.rawValue)
                 InfoItem(title: "大小", value: material.displayFileSize)
                 InfoItem(title: "创建时间", value: material.displayDate)
                 InfoItem(title: "关键词数", value: "\(material.keywords?.count ?? 0)")
@@ -98,6 +159,10 @@ struct MaterialDetailView: View {
         .padding()
         .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(8)
+        .sheet(isPresented: $isEditingCategory) {
+            CategoryEditSheet(material: $material, currentCategory: editedCategory)
+                .environmentObject(appState)
+        }
     }
     
     private var contentSection: some View {
@@ -121,9 +186,16 @@ struct MaterialDetailView: View {
                     }
                     .disabled(isProcessingOCR)
                 }
+                
+                Button {
+                    editedText = extractedText
+                    isEditingText = true
+                } label: {
+                    Label("编辑", systemImage: "pencil")
+                }
             }
             
-            if let text = material.extractedText ?? (material.content.isEmpty ? nil : material.content) {
+            if let text = extractedText.isEmpty ? nil : extractedText {
                 Text(text)
                     .font(.body)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -141,6 +213,15 @@ struct MaterialDetailView: View {
         .padding()
         .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(8)
+        .sheet(isPresented: $isEditingText) {
+            TextEditSheet(title: "编辑文档内容", content: $editedText) { newText in
+                extractedText = newText
+                if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
+                    appState.materials[index].extractedText = newText
+                    appState.storageService.saveMaterials(appState.materials)
+                }
+            }
+        }
     }
     
     private var keywordsSection: some View {
@@ -161,7 +242,14 @@ struct MaterialDetailView: View {
                         Label("重新提取", systemImage: "arrow.clockwise")
                     }
                 }
-                .disabled(isExtractingKeywords || (material.extractedText?.isEmpty ?? true) && material.content.isEmpty)
+                .disabled(isExtractingKeywords || extractedText.isEmpty)
+                
+                Button {
+                    editedKeywords = material.keywords?.joined(separator: ", ") ?? ""
+                    isEditingKeywords = true
+                } label: {
+                    Label("编辑", systemImage: "pencil")
+                }
             }
             
             if let keywords = material.keywords, !keywords.isEmpty {
@@ -177,7 +265,7 @@ struct MaterialDetailView: View {
                     }
                 }
             } else {
-                Text("点击「提取」分析考点关键词")
+                Text("点击「提取」分析考点关键词，或点击「编辑」手动添加")
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
@@ -186,6 +274,14 @@ struct MaterialDetailView: View {
         .padding()
         .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(8)
+        .sheet(isPresented: $isEditingKeywords) {
+            KeywordEditSheet(keywords: $editedKeywords) { newKeywords in
+                if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
+                    appState.materials[index].keywords = newKeywords
+                    appState.storageService.saveMaterials(appState.materials)
+                }
+            }
+        }
     }
     
     private var footerView: some View {
@@ -218,6 +314,7 @@ struct MaterialDetailView: View {
                 if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
                     appState.materials[index].extractedText = text
                     material = appState.materials[index]
+                    extractedText = text
                     appState.storageService.saveMaterials(appState.materials)
                 }
                 isProcessingOCR = false
@@ -226,13 +323,12 @@ struct MaterialDetailView: View {
     }
     
     private func extractKeywords() {
-        let text = material.extractedText ?? material.content
-        guard !text.isEmpty else { return }
+        guard !extractedText.isEmpty else { return }
         
         isExtractingKeywords = true
         
         Task {
-            let keywords = appState.keywordService.extractKeywords(from: text)
+            let keywords = appState.keywordService.extractKeywords(from: extractedText)
             await MainActor.run {
                 if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
                     appState.materials[index].keywords = keywords
@@ -242,6 +338,62 @@ struct MaterialDetailView: View {
                 isExtractingKeywords = false
             }
         }
+    }
+    
+    private func exportAsPDF() {
+        guard !extractedText.isEmpty else { return }
+        
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [.pdf]
+        savePanel.nameFieldStringValue = "\(material.name).pdf"
+        
+        savePanel.begin { response in
+            if response == .OK, let url = savePanel.url {
+                let pdfURL = PDFService.generateSummaryPDF(
+                    content: extractedText,
+                    title: material.name,
+                    subject: material.category.rawValue,
+                    keywords: material.keywords ?? []
+                )
+                
+                if let pdfURL = pdfURL {
+                    do {
+                        if FileManager.default.fileExists(atPath: url.path) {
+                            try FileManager.default.removeItem(at: url)
+                        }
+                        try FileManager.default.copyItem(at: pdfURL, to: url)
+                    } catch {
+                        print("Error saving PDF: \(error)")
+                    }
+                }
+            }
+        }
+    }
+    
+    private func exportAsText() {
+        guard !extractedText.isEmpty else { return }
+        
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [.plainText]
+        savePanel.nameFieldStringValue = "\(material.name).txt"
+        
+        savePanel.begin { response in
+            if response == .OK, let url = savePanel.url {
+                do {
+                    try extractedText.write(to: url, atomically: true, encoding: .utf8)
+                } catch {
+                    print("Error saving text: \(error)")
+                }
+            }
+        }
+    }
+    
+    private func copyToClipboard() {
+        guard !extractedText.isEmpty else { return }
+        
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(extractedText, forType: .string)
     }
 }
 
@@ -261,56 +413,124 @@ struct InfoItem: View {
     }
 }
 
-struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
+struct CategoryEditSheet: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+    @Binding var material: StudyMaterial
+    @State var currentCategory: MaterialCategory
     
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = FlowResult(
-            in: proposal.replacingUnspecifiedDimensions().width,
-            subviews: subviews,
-            spacing: spacing
-        )
-        return result.size
-    }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = FlowResult(
-            in: bounds.width,
-            subviews: subviews,
-            spacing: spacing
-        )
-        
-        for (index, subview) in subviews.enumerated() {
-            subview.place(at: CGPoint(x: bounds.minX + result.positions[index].x,
-                                       y: bounds.minY + result.positions[index].y),
-                          proposal: .unspecified)
-        }
-    }
-    
-    struct FlowResult {
-        var size: CGSize = .zero
-        var positions: [CGPoint] = []
-        
-        init(in maxWidth: CGFloat, subviews: Subviews, spacing: CGFloat) {
-            var x: CGFloat = 0
-            var y: CGFloat = 0
-            var rowHeight: CGFloat = 0
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("选择分类")
+                .font(.headline)
             
-            for subview in subviews {
-                let size = subview.sizeThatFits(.unspecified)
-                
-                if x + size.width > maxWidth && x > 0 {
-                    x = 0
-                    y += rowHeight + spacing
-                    rowHeight = 0
+            Picker("分类", selection: $currentCategory) {
+                ForEach(MaterialCategory.allCases, id: \.self) { category in
+                    Label(category.rawValue, systemImage: category.icon)
+                        .tag(category)
                 }
-                
-                positions.append(CGPoint(x: x, y: y))
-                rowHeight = max(rowHeight, size.height)
-                x += size.width + spacing
             }
+            .pickerStyle(.radioGroup)
             
-            self.size = CGSize(width: maxWidth, height: y + rowHeight)
+            HStack {
+                Button("取消") {
+                    dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Spacer()
+                
+                Button("保存") {
+                    if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
+                        appState.materials[index].category = currentCategory
+                        material = appState.materials[index]
+                        appState.storageService.saveMaterials(appState.materials)
+                    }
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
         }
+        .padding(20)
+        .frame(width: 300)
+    }
+}
+
+struct TextEditSheet: View {
+    @Environment(\.dismiss) var dismiss
+    let title: String
+    @Binding var content: String
+    var onSave: (String) -> Void
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(title)
+                .font(.headline)
+            
+            TextEditor(text: $content)
+                .font(.body)
+                .frame(minHeight: 200)
+                .border(Color(nsColor: .separatorColor))
+            
+            HStack {
+                Button("取消") {
+                    dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Spacer()
+                
+                Button("保存") {
+                    onSave(content)
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(20)
+        .frame(width: 500, height: 350)
+    }
+}
+
+struct KeywordEditSheet: View {
+    @Environment(\.dismiss) var dismiss
+    @Binding var keywords: String
+    var onSave: ([String]) -> Void
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("编辑考点关键词")
+                .font(.headline)
+            
+            Text("请用逗号分隔各个关键词")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            TextEditor(text: $keywords)
+                .font(.body)
+                .frame(minHeight: 150)
+                .border(Color(nsColor: .separatorColor))
+            
+            HStack {
+                Button("取消") {
+                    dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Spacer()
+                
+                Button("保存") {
+                    let keywordArray = keywords
+                        .components(separatedBy: CharacterSet(charactersIn: ",，"))
+                        .map { $0.trimmingCharacters(in: .whitespaces) }
+                        .filter { !$0.isEmpty }
+                    onSave(keywordArray)
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(20)
+        .frame(width: 400, height: 300)
     }
 }

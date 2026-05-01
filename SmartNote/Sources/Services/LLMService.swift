@@ -30,7 +30,7 @@ class LLMService {
         请用中文回复，格式清晰。
         """
         
-        return try await sendMessage(system: systemPrompt, user: text)
+        return try await sendChatMessage(system: systemPrompt, user: text)
     }
     
     func generateSummary(_ text: String) async throws -> String {
@@ -39,7 +39,7 @@ class LLMService {
         }
         
         let prompt = "请用简洁的中文总结以下内容的核心要点："
-        return try await sendMessage(system: prompt, user: text)
+        return try await sendChatMessage(system: prompt, user: text)
     }
     
     func generateQuestions(_ text: String, count: Int = 5) async throws -> String {
@@ -48,7 +48,7 @@ class LLMService {
         }
         
         let prompt = "基于以下学习资料，生成 \(count) 道复习思考题或选择题："
-        return try await sendMessage(system: prompt, user: text)
+        return try await sendChatMessage(system: prompt, user: text)
     }
     
     func explainConcept(_ concept: String, context: String? = nil) async throws -> String {
@@ -58,10 +58,18 @@ class LLMService {
         
         let contextText = context ?? "请解释这个概念"
         let prompt = "请详细解释以下概念，如果有必要可以结合例子说明："
-        return try await sendMessage(system: prompt, user: concept)
+        return try await sendChatMessage(system: prompt, user: concept)
     }
     
-    private func sendMessage(system: String, user: String) async throws -> String {
+    func sendMessage(system: String, user: String) async throws -> String {
+        guard isConfigured() else {
+            throw LLMError.notConfigured
+        }
+        
+        return try await sendChatMessage(system: system, user: user)
+    }
+    
+    private func sendChatMessage(system: String, user: String) async throws -> String {
         switch configuration.provider {
         case .lmstudio:
             return try await callLMStudio(system: system, user: user)
@@ -212,7 +220,7 @@ class LLMService {
         }
         
         do {
-            let result = try await sendMessage(system: "请用一句话回复测试成功", user: "你好")
+            let result = try await sendChatMessage(system: "请用一句话回复测试成功", user: "你好")
             return (true, "连接成功！\n\(result)")
         } catch let error as LLMError {
             return (false, error.localizedDescription)
