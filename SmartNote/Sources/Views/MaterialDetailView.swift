@@ -222,6 +222,10 @@ struct MaterialDetailView: View {
                     .toggleStyle(.switch)
                     .controlSize(.small)
                 
+                if !extractedText.isEmpty {
+                    speechButtons
+                }
+                
                 if material.type == .image && material.extractedText == nil {
                     Button {
                         performOCR()
@@ -276,6 +280,83 @@ struct MaterialDetailView: View {
         .padding()
         .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(8)
+    }
+    
+    private var speechButtons: some View {
+        HStack(spacing: 8) {
+            if appState.speechService.isSpeaking {
+                Button {
+                    appState.speechService.togglePause()
+                } label: {
+                    Image(systemName: appState.speechService.isPaused ? "play.fill" : "pause.fill")
+                }
+                .buttonStyle(.bordered)
+                
+                Button {
+                    appState.speechService.stop()
+                } label: {
+                    Image(systemName: "stop.fill")
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
+            }
+            
+            Button {
+                appState.speechService.speak(extractedText)
+            } label: {
+                Label("朗读", systemImage: "speaker.wave.2.fill")
+            }
+            .buttonStyle(.bordered)
+            
+            Button {
+                explainWithAI()
+            } label: {
+                if isProcessingOCR {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                } else {
+                    Label("AI 讲解", systemImage: "waveform")
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(isProcessingOCR || extractedText.isEmpty)
+        }
+    }
+    
+    private func explainWithAI() {
+        guard !extractedText.isEmpty else { return }
+        guard appState.llmConfiguration.enabled else {
+            appState.errorMessage = "请先在设置中启用 AI 分析功能"
+            appState.showError = true
+            return
+        }
+        
+        isProcessingOCR = true
+        
+        Task {
+            do {
+                let prompt = """
+                请用通俗易懂的语言讲解以下内容，可以添加例子帮助理解。讲解要清晰、有条理。
+                """
+                try await appState.llmService.sendMessageStreaming(system: prompt, user: extractedText) { chunk in
+                    Task { @MainActor in
+                        self.appState.aiAnalysisResult += chunk
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.appState.errorMessage = error.localizedDescription
+                    self.appState.showError = true
+                }
+            }
+            
+            await MainActor.run {
+                isProcessingOCR = false
+                if !self.appState.aiAnalysisResult.isEmpty {
+                    self.appState.speechService.speak(self.appState.aiAnalysisResult)
+                }
+            }
+        }
     }
     
     private func autoSaveContent(_ text: String) {

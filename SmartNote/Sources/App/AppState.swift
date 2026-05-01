@@ -23,6 +23,7 @@ class AppState: ObservableObject {
     let keywordService = KeywordExtractionService()
     let calendarService = CalendarService()
     let storageService = StorageService()
+    let speechService = SpeechService.shared
     var llmService: LLMService
     
     var llmConfiguration: LLMConfiguration {

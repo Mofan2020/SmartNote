@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AIChatView: View {
     @EnvironmentObject var appState: AppState
+    @StateObject private var speechService = SpeechService.shared
     @State private var userMessage = ""
     @State private var messages: [ChatMessage] = []
     @State private var isSending = false
@@ -67,6 +68,8 @@ struct AIChatView: View {
                 .tint(.red)
             }
             
+            speechControls
+            
             if !appState.llmConfiguration.enabled {
                 Button {
                     showSettings = true
@@ -84,7 +87,41 @@ struct AIChatView: View {
             .buttonStyle(.bordered)
         }
         .padding()
-        .background(Color(nsColor: .windowBackgroundColor))
+    }
+    
+    private var speechControls: some View {
+        HStack(spacing: 8) {
+            if speechService.isSpeaking {
+                Button {
+                    speechService.togglePause()
+                } label: {
+                    Label(
+                        speechService.isPaused ? "继续" : "暂停",
+                        systemImage: speechService.isPaused ? "play.fill" : "pause.fill"
+                    )
+                }
+                .buttonStyle(.bordered)
+                
+                Button {
+                    speechService.stop()
+                } label: {
+                    Label("停止", systemImage: "stop.fill")
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
+            }
+            
+            Menu {
+                ForEach(speechService.getChineseVoices(), id: \.self) { voice in
+                    Button(speechService.getVoiceDisplayName(voice)) {
+                        speechService.setVoice(voice)
+                    }
+                }
+            } label: {
+                Label("语音", systemImage: "speaker.wave.2.fill")
+            }
+            .menuStyle(.borderlessButton)
+        }
     }
     
     private var inputView: some View {
@@ -154,6 +191,9 @@ struct AIChatView: View {
                 await MainActor.run {
                     isSending = false
                     currentStreamingID = nil
+                    if !streamingContent.isEmpty {
+                        speechService.speak(streamingContent)
+                    }
                 }
             } catch is CancellationError {
                 await MainActor.run {
