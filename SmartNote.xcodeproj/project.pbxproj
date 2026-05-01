@@ -37,6 +37,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09B7DE222FA49B8900F5959F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		0E57E6AD3AF6399A1E7F4E50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		12987FCC65DCD2D306F5CCB3 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		1B1163580FC0527F161967C0 /* MarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownView.swift; sourceTree = "<group>"; };
@@ -81,6 +82,7 @@
 		4170B0FF628D4B3A3AAF700C = {
 			isa = PBXGroup;
 			children = (
+				09B7DE222FA49B8900F5959F /* .gitignore */,
 				57AC357A7B13540BFBB84A46 /* Resources */,
 				F7263EA545A13A0DDBD355EB /* Sources */,
 				DB91F87EFACDB75871C18F39 /* Products */,
