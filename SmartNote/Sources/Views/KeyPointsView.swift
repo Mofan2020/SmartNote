@@ -2,11 +2,17 @@ import SwiftUI
 
 struct KeyPointsView: View {
     @EnvironmentObject var appState: AppState
-    @State private var selectedMaterial: StudyMaterial?
+    @State private var selectedMaterialID: UUID?
     @State private var searchText = ""
     @State private var extractedKeywords: [String] = []
     @State private var keySentences: [String] = []
     @State private var showAIAnalysis = false
+    @State private var currentMaterial: StudyMaterial?
+    
+    private var selectedMaterial: StudyMaterial? {
+        guard let id = selectedMaterialID else { return nil }
+        return appState.materials.first { $0.id == id }
+    }
     
     private var allKeywords: [String] {
         appState.materials
@@ -32,8 +38,16 @@ struct KeyPointsView: View {
             }
         }
         .sheet(isPresented: $showAIAnalysis) {
-            AIAnalysisSheet(material: selectedMaterial)
-                .environmentObject(appState)
+            if let material = currentMaterial {
+                AIAnalysisSheet(material: material)
+                    .environmentObject(appState)
+            }
+        }
+        .onAppear {
+            if let id = selectedMaterialID,
+               let material = appState.materials.first(where: { $0.id == id }) {
+                currentMaterial = material
+            }
         }
     }
     
@@ -69,13 +83,10 @@ struct KeyPointsView: View {
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
             
-            List(appState.materials.filter { material in
-                searchText.isEmpty || material.name.localizedCaseInsensitiveContains(searchText)
-            }) { material in
-                Button {
-                    selectedMaterial = material
-                    analyzeMaterial(material)
-                } label: {
+            List(selection: $selectedMaterialID) {
+                ForEach(appState.materials.filter { material in
+                    searchText.isEmpty || material.name.localizedCaseInsensitiveContains(searchText)
+                }) { material in
                     HStack {
                         Image(systemName: material.type.icon)
                             .foregroundColor(.accentColor)
@@ -88,13 +99,9 @@ struct KeyPointsView: View {
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
-                        if selectedMaterial?.id == material.id {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.accentColor)
-                        }
                     }
+                    .tag(material.id)
                 }
-                .buttonStyle(.plain)
             }
             .listStyle(.inset)
         }
@@ -104,56 +111,75 @@ struct KeyPointsView: View {
     private var keywordsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let material = selectedMaterial {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "brain.head.profile")
-                            .foregroundColor(.accentColor)
-                        Text(material.name)
-                            .font(.headline)
-                        Spacer()
-                        
-                        Button {
-                            showAIAnalysis = true
-                        } label: {
-                            if appState.isAnalyzingWithAI {
-                                ProgressView()
-                                    .scaleEffect(0.7)
-                            } else {
-                                Label("AI 分析", systemImage: "sparkles")
-                            }
-                        }
-                        .disabled(appState.isAnalyzingWithAI || !appState.llmConfiguration.enabled)
-                    }
-                    
-                    if let keywords = material.keywords, !keywords.isEmpty {
-                        Text("关键词")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        
-                        FlowLayout(spacing: 8) {
-                            ForEach(keywords, id: \.self) { keyword in
-                                KeywordChip(keyword: keyword)
-                            }
-                        }
-                    } else {
-                        Text("暂无考点数据，点击左侧「分析」按钮提取")
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding()
-                    }
-                    
-                    if !appState.llmConfiguration.enabled {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.orange)
-                            Text("请在设置中启用 AI 分析功能")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            Image(systemName: "doc.text")
+                                .foregroundColor(.accentColor)
+                            Text(material.name)
+                                .font(.headline)
+                            Spacer()
+                            
+                            Button {
+                                if let updatedMaterial = appState.materials.first(where: { $0.id == material.id }) {
+                                    currentMaterial = updatedMaterial
+                                }
+                                showAIAnalysis = true
+                            } label: {
+                                if appState.isAnalyzingWithAI {
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                } else {
+                                    Label("AI 分析", systemImage: "sparkles")
+                                }
+                            }
+                            .disabled(appState.isAnalyzingWithAI || !appState.llmConfiguration.enabled)
                         }
-                        .padding(.top, 8)
+                        
+                        Divider()
+                        
+                        if let keywords = material.keywords, !keywords.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("关键词")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                
+                                FlowLayout(spacing: 8) {
+                                    ForEach(keywords, id: \.self) { keyword in
+                                        KeywordChip(keyword: keyword)
+                                    }
+                                }
+                            }
+                        } else {
+                            VStack(spacing: 8) {
+                                Image(systemName: "doc.text.magnifyingglass")
+                                    .font(.title)
+                                    .foregroundColor(.secondary)
+                                Text("暂无考点数据")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                Text("点击「AI 分析」获取智能分析")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 20)
+                        }
+                        
+                        if !appState.llmConfiguration.enabled {
+                            HStack {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.orange)
+                                Text("请在设置中启用 AI 分析功能")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                            .background(Color.orange.opacity(0.1))
+                            .cornerRadius(8)
+                        }
                     }
                 }
-                .padding()
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "brain")
@@ -167,8 +193,6 @@ struct KeyPointsView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            
-            Spacer()
         }
         .padding()
     }
@@ -190,7 +214,7 @@ struct KeyPointsView: View {
 struct AIAnalysisSheet: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
-    let material: StudyMaterial?
+    let material: StudyMaterial
     @State private var analysisType: AIAnalysisType = .keyPoints
     @State private var showSavePanel = false
     
@@ -214,88 +238,84 @@ struct AIAnalysisSheet: View {
             
             Divider()
             
-            if let material = material {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        HStack {
-                            Text("分析资料:")
-                                .foregroundColor(.secondary)
-                            Text(material.name)
-                                .fontWeight(.medium)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Text("分析资料:")
+                            .foregroundColor(.secondary)
+                        Text(material.name)
+                            .fontWeight(.medium)
+                    }
+                    
+                    Picker("分析类型", selection: $analysisType) {
+                        ForEach(AIAnalysisType.allCases, id: \.self) { type in
+                            Text(type.rawValue).tag(type)
                         }
-                        
-                        Picker("分析类型", selection: $analysisType) {
-                            ForEach(AIAnalysisType.allCases, id: \.self) { type in
-                                Text(type.rawValue).tag(type)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        
-                        Button {
-                            performAIAnalysis(material: material, type: analysisType)
-                        } label: {
-                            if appState.isAnalyzingWithAI {
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    Button {
+                        performAIAnalysis()
+                    } label: {
+                        if appState.isAnalyzingWithAI {
+                            HStack {
                                 ProgressView()
                                     .scaleEffect(0.8)
                                 Text("分析中...")
-                            } else {
-                                Label("开始 AI 分析", systemImage: "sparkles")
                             }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(appState.isAnalyzingWithAI || !appState.llmConfiguration.enabled)
-                        
-                        if !appState.llmConfiguration.enabled {
-                            HStack {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundColor(.orange)
-                                Text("请在设置中启用 AI 分析功能")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding()
-                            .background(Color.orange.opacity(0.1))
-                            .cornerRadius(8)
-                        }
-                        
-                        if !appState.aiAnalysisResult.isEmpty {
-                            Divider()
-                            HStack {
-                                Text("分析结果")
-                                    .font(.headline)
-                                Spacer()
-                                Button {
-                                    saveAsPDF(material: material)
-                                } label: {
-                                    Label("保存 PDF", systemImage: "square.and.arrow.down")
-                                }
-                                .buttonStyle(.bordered)
-                            }
-                            Text(appState.aiAnalysisResult)
-                                .font(.body)
-                                .textSelection(.enabled)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(nsColor: .textBackgroundColor))
-                                .cornerRadius(8)
+                        } else {
+                            Label("开始 AI 分析", systemImage: "sparkles")
                         }
                     }
-                    .padding()
+                    .buttonStyle(.borderedProminent)
+                    .disabled(appState.isAnalyzingWithAI || !appState.llmConfiguration.enabled)
+                    
+                    if !appState.llmConfiguration.enabled {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.orange)
+                            Text("请在设置中启用 AI 分析功能")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .background(Color.orange.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    
+                    if !appState.aiAnalysisResult.isEmpty {
+                        Divider()
+                        HStack {
+                            Text("分析结果")
+                                .font(.headline)
+                            Spacer()
+                            Button {
+                                saveAsPDF()
+                            } label: {
+                                Label("保存 PDF", systemImage: "square.and.arrow.down")
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                        Text(appState.aiAnalysisResult)
+                            .font(.body)
+                            .textSelection(.enabled)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(nsColor: .textBackgroundColor))
+                            .cornerRadius(8)
+                    }
                 }
-            } else {
-                Text("请先选择一份资料")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
             }
         }
         .frame(width: 550, height: 500)
     }
     
-    private func performAIAnalysis(material: StudyMaterial, type: AIAnalysisType) {
+    private func performAIAnalysis() {
         let text = material.extractedText ?? material.content
         guard !text.isEmpty else { return }
         
-        switch type {
+        switch analysisType {
         case .keyPoints:
             appState.analyzeWithAI(for: material)
         case .summary:
@@ -317,7 +337,7 @@ struct AIAnalysisSheet: View {
         }
     }
     
-    private func saveAsPDF(material: StudyMaterial) {
+    private func saveAsPDF() {
         guard !appState.aiAnalysisResult.isEmpty else { return }
         
         let savePanel = NSSavePanel()
