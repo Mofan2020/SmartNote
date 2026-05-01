@@ -22,6 +22,7 @@
 		7E55A9BF32BD91003C73C3D6 /* KeyPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C67150FE8E22E2AEAC4C82 /* KeyPointsView.swift */; };
 		86654172C280D417E594730D /* MaterialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B7484EF8E90D3649A6A5FA /* MaterialsListView.swift */; };
 		96E3AA1638583660A537C17C /* SmartNoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A56F3D9C89D292DF37A1E7 /* SmartNoteApp.swift */; };
+		A83592B1242E65D43DD45C35 /* CreateMaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4575EE9184B750B4B671582 /* CreateMaterialView.swift */; };
 		B1B05AFB264D51D621CB3350 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14ECD3A7BAB1809B071A70 /* SettingsView.swift */; };
 		B3FEF150B1EA9E2B81679BB2 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9153CA3BAB1A98A91814C442 /* Components.swift */; };
 		BDE72A44A8EEA5D1556594A4 /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEEF4F30835C4BD18D390FD /* OCRService.swift */; };
@@ -62,6 +63,7 @@
 		EE1E56D223E7A85D761A70BA /* PDFService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFService.swift; sourceTree = "<group>"; };
 		F332C2BF2D9E8D571CB00EFA /* LLMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMSettingsView.swift; sourceTree = "<group>"; };
 		F3552CF8976544956A158CCD /* LLMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMService.swift; sourceTree = "<group>"; };
+		F4575EE9184B750B4B671582 /* CreateMaterialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMaterialView.swift; sourceTree = "<group>"; };
 		FD1E5B0EE3EA703F874316BC /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -137,6 +139,7 @@
 				A1BF99288F70ED636D3AAB01 /* AIChatView.swift */,
 				9153CA3BAB1A98A91814C442 /* Components.swift */,
 				5B8C1B44A2A61CA79BD48879 /* ContentView.swift */,
+				F4575EE9184B750B4B671582 /* CreateMaterialView.swift */,
 				270C3E3C779EA0B469949129 /* FileImportView.swift */,
 				92C67150FE8E22E2AEAC4C82 /* KeyPointsView.swift */,
 				F332C2BF2D9E8D571CB00EFA /* LLMSettingsView.swift */,
@@ -257,6 +260,7 @@
 				6BEAC51EFE84A910F12692E9 /* CalendarService.swift in Sources */,
 				B3FEF150B1EA9E2B81679BB2 /* Components.swift in Sources */,
 				67621F51E84AAAA8AB0E2627 /* ContentView.swift in Sources */,
+				A83592B1242E65D43DD45C35 /* CreateMaterialView.swift in Sources */,
 				FD26ECDCB88D37EA644DDA79 /* FileImportView.swift in Sources */,
 				CDCD8F44AA0129195F260CA0 /* FileScannerService.swift in Sources */,
 				E5FE28187FFF047A3A7D2AFE /* FlowLayout.swift in Sources */,

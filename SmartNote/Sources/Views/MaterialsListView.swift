@@ -4,6 +4,7 @@ struct MaterialsListView: View {
     @EnvironmentObject var appState: AppState
     @State private var isEditing = false
     @State private var editingMaterial: StudyMaterial?
+    @State private var showCreateMaterial = false
     
     var filter: MaterialCategory?
     var favoritesOnly: Bool = false
@@ -36,6 +37,10 @@ struct MaterialsListView: View {
             MaterialDetailView(material: material)
                 .environmentObject(appState)
         }
+        .sheet(isPresented: $showCreateMaterial) {
+            CreateMaterialView()
+                .environmentObject(appState)
+        }
     }
     
     private var toolbarView: some View {
@@ -54,12 +59,23 @@ struct MaterialsListView: View {
                     .foregroundColor(.secondary)
             }
             
-            Button {
-                appState.showFileImporter = true
+            Menu {
+                Button {
+                    showCreateMaterial = true
+                } label: {
+                    Label("新建资料", systemImage: "doc.badge.plus")
+                }
+                
+                Button {
+                    appState.showFileImporter = true
+                } label: {
+                    Label("导入文件", systemImage: "folder.badge.plus")
+                }
             } label: {
-                Label("导入", systemImage: "plus")
+                Label("添加", systemImage: "plus")
             }
-            .buttonStyle(.bordered)
+            .menuStyle(.borderlessButton)
+            .frame(width: 80)
         }
         .padding()
         .background(Color(nsColor: .windowBackgroundColor))
@@ -76,17 +92,25 @@ struct MaterialsListView: View {
                 .font(.title2)
                 .fontWeight(.medium)
             
-            Text("点击上方「导入」按钮添加学习资料")
+            Text("点击下方按钮添加学习资料")
                 .font(.body)
                 .foregroundColor(.secondary)
             
-            Button {
-                appState.showFileImporter = true
-            } label: {
-                Label("导入资料", systemImage: "plus.circle.fill")
+            HStack(spacing: 12) {
+                Button {
+                    showCreateMaterial = true
+                } label: {
+                    Label("新建资料", systemImage: "doc.badge.plus")
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Button {
+                    appState.showFileImporter = true
+                } label: {
+                    Label("导入文件", systemImage: "folder.badge.plus")
+                }
+                .buttonStyle(.bordered)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
             .padding(.top, 8)
             Spacer()
         }

@@ -10,10 +10,8 @@ struct MaterialDetailView: View {
     @State private var isProcessingOCR = false
     @State private var isExtractingKeywords = false
     @State private var isEditingCategory = false
-    @State private var isEditingText = false
     @State private var isEditingKeywords = false
     @State private var editedCategory: MaterialCategory = .other
-    @State private var editedText: String = ""
     @State private var editedKeywords: String = ""
     @State private var showExportMenu = false
     
@@ -40,7 +38,6 @@ struct MaterialDetailView: View {
         .onAppear {
             extractedText = material.extractedText ?? material.content
             editedCategory = material.category
-            editedText = extractedText
             editedKeywords = material.keywords?.joined(separator: ", ") ?? ""
         }
     }
@@ -173,6 +170,10 @@ struct MaterialDetailView: View {
                 
                 Spacer()
                 
+                Text("自动保存")
+                    .font(.caption)
+                    .foregroundColor(.green)
+                
                 if material.type == .image && material.extractedText == nil {
                     Button {
                         performOCR()
@@ -186,41 +187,37 @@ struct MaterialDetailView: View {
                     }
                     .disabled(isProcessingOCR)
                 }
-                
-                Button {
-                    editedText = extractedText
-                    isEditingText = true
-                } label: {
-                    Label("编辑", systemImage: "pencil")
-                }
             }
             
-            if let text = extractedText.isEmpty ? nil : extractedText {
-                Text(text)
-                    .font(.body)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color(nsColor: .textBackgroundColor))
-                    .cornerRadius(8)
-                    .textSelection(.enabled)
-            } else {
-                Text("暂无文本内容")
+            TextEditor(text: $extractedText)
+                .font(.body)
+                .frame(minHeight: 150)
+                .padding(4)
+                .background(Color(nsColor: .textBackgroundColor))
+                .cornerRadius(8)
+                .onChange(of: extractedText) { newValue in
+                    autoSaveContent(newValue)
+                }
+            
+            HStack {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.green)
+                    .font(.caption)
+                Text("\(extractedText.count) 字符")
+                    .font(.caption)
                     .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding()
             }
         }
         .padding()
         .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(8)
-        .sheet(isPresented: $isEditingText) {
-            TextEditSheet(title: "编辑文档内容", content: $editedText) { newText in
-                extractedText = newText
-                if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
-                    appState.materials[index].extractedText = newText
-                    appState.storageService.saveMaterials(appState.materials)
-                }
-            }
+    }
+    
+    private func autoSaveContent(_ text: String) {
+        if let index = appState.materials.firstIndex(where: { $0.id == material.id }) {
+            appState.materials[index].extractedText = text
+            appState.materials[index].modifiedAt = Date()
+            appState.storageService.saveMaterials(appState.materials)
         }
     }
     
