@@ -16,6 +16,10 @@ class StorageService {
         appSupportDirectory.appendingPathComponent("settings.json")
     }
     
+    private var learningProfileFileURL: URL {
+        appSupportDirectory.appendingPathComponent("learningProfile.json")
+    }
+    
     init() {
         let paths = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)
         appSupportDirectory = paths.first!.appendingPathComponent("SmartNote")
@@ -47,6 +51,14 @@ class StorageService {
     
     func loadSettings() -> AppSettings {
         load(from: settingsFileURL) ?? AppSettings()
+    }
+    
+    func saveLearningProfile(_ profile: UserLearningProfile) {
+        save(profile, to: learningProfileFileURL)
+    }
+    
+    func loadLearningProfile() -> UserLearningProfile {
+        load(from: learningProfileFileURL) ?? UserLearningProfile()
     }
     
     private func save<T: Encodable>(_ object: T, to url: URL) {

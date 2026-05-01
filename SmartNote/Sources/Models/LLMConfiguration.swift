@@ -8,6 +8,7 @@ struct LLMConfiguration: Codable, Equatable {
     var modelID: String = ""
     var temperature: Double = 0.7
     var maxTokens: Int = 2048
+    var supportsImageUnderstanding: Bool = false
     
     var displayName: String {
         switch provider {

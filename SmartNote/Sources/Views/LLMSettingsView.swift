@@ -70,6 +70,16 @@ struct LLMSettingsView: View {
                 Stepper("最大 Token 数: \(config.maxTokens)", value: $config.maxTokens, in: 256...4096, step: 256)
             }
             
+            Section("图像理解") {
+                Toggle("AI 服务器支持图像理解", isOn: $config.supportsImageUnderstanding)
+                
+                if !config.supportsImageUnderstanding {
+                    Text("关闭后，图片将被转换为文本发送（可能存在识别误差）")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
             Section {
                 HStack {
                     Button("测试连接") {

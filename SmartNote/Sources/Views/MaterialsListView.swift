@@ -244,6 +244,7 @@ struct MaterialRowView: View {
         case .lecture: return .blue
         case .exam: return .red
         case .notes: return .green
+        case .personalAnalysis: return .purple
         case .other: return .gray
         }
     }

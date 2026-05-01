@@ -11,6 +11,11 @@ struct SettingsView: View {
                     Label("通用", systemImage: "gear")
                 }
             
+            learningProfileSection
+                .tabItem {
+                    Label("学习", systemImage: "brain.head.profile")
+                }
+            
             llmSection
                 .tabItem {
                     Label("AI 分析", systemImage: "brain")
@@ -64,6 +69,10 @@ struct SettingsView: View {
     
     private var llmSection: some View {
         LLMSettingsView()
+    }
+    
+    private var learningProfileSection: some View {
+        LearningProfileSettingsView()
     }
     
     private var storageSection: some View {

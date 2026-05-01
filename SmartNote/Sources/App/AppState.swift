@@ -24,6 +24,7 @@ class AppState: ObservableObject {
     let calendarService = CalendarService()
     let storageService = StorageService()
     let speechService = SpeechService.shared
+    let learningAnalysisService = LearningAnalysisService.shared
     var llmService: LLMService
     
     var llmConfiguration: LLMConfiguration {

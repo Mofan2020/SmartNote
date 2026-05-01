@@ -97,6 +97,7 @@ enum MaterialCategory: String, Codable, CaseIterable {
     case lecture = "课件"
     case exam = "真题"
     case notes = "笔记"
+    case personalAnalysis = "个人分析"
     case other = "其他"
     
     var icon: String {
@@ -104,6 +105,7 @@ enum MaterialCategory: String, Codable, CaseIterable {
         case .lecture: return "book.fill"
         case .exam: return "pencil.and.list.clipboard"
         case .notes: return "note.text"
+        case .personalAnalysis: return "person.fill.questionmark"
         case .other: return "folder.fill"
         }
     }
@@ -113,6 +115,7 @@ enum MaterialCategory: String, Codable, CaseIterable {
         case .lecture: return "blue"
         case .exam: return "red"
         case .notes: return "green"
+        case .personalAnalysis: return "purple"
         case .other: return "gray"
         }
     }

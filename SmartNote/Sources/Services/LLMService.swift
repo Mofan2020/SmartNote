@@ -72,7 +72,32 @@ class LLMService {
             throw LLMError.notConfigured
         }
         
-        return try await sendChatMessage(system: system, user: user)
+        let enhancedSystem = buildEnhancedPrompt(system)
+        return try await sendChatMessage(system: enhancedSystem, user: user)
+    }
+    
+    private func buildEnhancedPrompt(_ prompt: String) -> String {
+        let profile = LearningAnalysisService.shared.currentProfile
+        guard profile.isEnabled else { return prompt }
+        
+        let prefs = profile.preferences
+        var enhanced = prompt + "\n\n"
+        
+        enhanced += "【用户偏好提示】\n"
+        enhanced += "- 讲解风格：\(prefs.preferredExplanationStyle.description)\n"
+        enhanced += "- 难度：\(prefs.preferredDifficulty.description)\n"
+        enhanced += "- 语言风格：\(prefs.preferredLanguageTone.description)\n"
+        
+        if !prefs.preferredExampleTypes.isEmpty {
+            let examples = prefs.preferredExampleTypes.map { $0.description }.joined(separator: "、")
+            enhanced += "- 例子类型：\(examples)\n"
+        }
+        
+        if !prefs.weakSubjects.isEmpty {
+            enhanced += "- 薄弱科目：\(prefs.weakSubjects.joined(separator: "、"))（需要更多解释）\n"
+        }
+        
+        return enhanced
     }
     
     func sendMessageStreaming(system: String, user: String, onChunk: @escaping (String) -> Void) async throws {
@@ -80,13 +105,15 @@ class LLMService {
             throw LLMError.notConfigured
         }
         
+        let enhancedSystem = buildEnhancedPrompt(system)
+        
         switch configuration.provider {
         case .lmstudio:
-            try await streamLMStudio(system: system, user: user, onChunk: onChunk)
+            try await streamLMStudio(system: enhancedSystem, user: user, onChunk: onChunk)
         case .openai:
-            try await streamOpenAI(system: system, user: user, onChunk: onChunk)
+            try await streamOpenAI(system: enhancedSystem, user: user, onChunk: onChunk)
         case .anthropic:
-            try await streamAnthropic(system: system, user: user, onChunk: onChunk)
+            try await streamAnthropic(system: enhancedSystem, user: user, onChunk: onChunk)
         }
     }
     
