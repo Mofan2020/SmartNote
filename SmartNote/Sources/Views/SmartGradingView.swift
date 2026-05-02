@@ -3,13 +3,13 @@ import UniformTypeIdentifiers
 
 struct SmartGradingView: View {
     @EnvironmentObject var appState: AppState
-    @State private var selectedFiles: [URL] = []
-    @State private var selectedMaterials: [StudyMaterial] = []
+    @State private var markedFiles: [MarkedFile] = []
+    @State private var markedMaterials: [MarkedMaterial] = []
     @State private var isGrading = false
     @State private var gradingResult = ""
     @State private var showFileImporter = false
     @State private var showMaterialPicker = false
-    @State private var extractedTexts: [String] = []
+    @State private var extractedTexts: [(String, Set<FileMarking>)] = []
     @State private var showQuestionExplanation = false
     @State private var questionToExplain = ""
     @State private var explanationResult = ""
@@ -19,6 +19,8 @@ struct SmartGradingView: View {
     @State private var generatedQuestions = ""
     @State private var showAnalysisSheet = false
     @State private var analysisContent = ""
+    @State private var showValidationError = false
+    @State private var validationErrorMessage = ""
     
     var body: some View {
         VStack(spacing: 0) {
@@ -26,7 +28,7 @@ struct SmartGradingView: View {
             
             Divider()
             
-            if selectedFiles.isEmpty && selectedMaterials.isEmpty {
+            if markedFiles.isEmpty && markedMaterials.isEmpty {
                 emptyStateView
             } else {
                 fileListView
@@ -41,7 +43,7 @@ struct SmartGradingView: View {
             actionButtons
         }
         .sheet(isPresented: $showMaterialPicker) {
-            MaterialPickerSheet(selectedMaterials: $selectedMaterials)
+            MaterialPickerSheet(markedMaterials: $markedMaterials)
         }
         .sheet(isPresented: $showQuestionExplanation) {
             questionExplanationSheet
@@ -51,6 +53,11 @@ struct SmartGradingView: View {
         }
         .sheet(isPresented: $showAnalysisSheet) {
             analysisSheet
+        }
+        .alert("提示", isPresented: $showValidationError) {
+            Button("确定", role: .cancel) {}
+        } message: {
+            Text(validationErrorMessage)
         }
         .fileImporter(
             isPresented: $showFileImporter,
@@ -118,52 +125,118 @@ struct SmartGradingView: View {
     
     private var fileListView: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 8) {
-                if !selectedFiles.isEmpty {
+            LazyVStack(alignment: .leading, spacing: 12) {
+                if !markedFiles.isEmpty {
                     Section("已上传文件") {
-                        ForEach(selectedFiles.indices, id: \.self) { index in
-                            HStack {
-                                Image(systemName: "doc")
-                                Text(selectedFiles[index].lastPathComponent)
-                                Spacer()
-                                Button {
-                                    selectedFiles.remove(at: index)
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.red)
+                        ForEach(markedFiles) { markedFile in
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack {
+                                    Image(systemName: "doc.fill")
+                                        .foregroundColor(.blue)
+                                    Text(markedFile.fileName)
+                                        .font(.headline)
+                                    Spacer()
+                                    Button {
+                                        markedFiles.removeAll { $0.id == markedFile.id }
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.red)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                
+                                HStack(spacing: 8) {
+                                    ForEach(FileMarking.allCases) { marking in
+                                        Button {
+                                            toggleMarking(for: markedFile.id, marking: marking, isMaterial: false)
+                                        } label: {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: markedFile.markings.contains(marking) ? "checkmark.circle.fill" : "circle")
+                                                Text(marking.rawValue)
+                                            }
+                                            .font(.caption)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(markedFile.markings.contains(marking) ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
+                                            .cornerRadius(4)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
                             }
-                            .padding(8)
+                            .padding(10)
                             .background(Color(nsColor: .controlBackgroundColor))
-                            .cornerRadius(6)
+                            .cornerRadius(8)
                         }
                     }
                 }
                 
-                if !selectedMaterials.isEmpty {
+                if !markedMaterials.isEmpty {
                     Section("已选资料") {
-                        ForEach(selectedMaterials) { material in
-                            HStack {
-                                Image(systemName: material.type.icon)
-                                Text(material.name)
-                                Spacer()
-                                Button {
-                                    selectedMaterials.removeAll { $0.id == material.id }
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.red)
+                        ForEach(markedMaterials) { markedMaterial in
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack {
+                                    Image(systemName: markedMaterial.material.type.icon)
+                                        .foregroundColor(.green)
+                                    Text(markedMaterial.materialName)
+                                        .font(.headline)
+                                    Spacer()
+                                    Button {
+                                        markedMaterials.removeAll { $0.id == markedMaterial.id }
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.red)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                
+                                HStack(spacing: 8) {
+                                    ForEach(FileMarking.allCases) { marking in
+                                        Button {
+                                            toggleMarking(for: markedMaterial.id, marking: marking, isMaterial: true)
+                                        } label: {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: markedMaterial.markings.contains(marking) ? "checkmark.circle.fill" : "circle")
+                                                Text(marking.rawValue)
+                                            }
+                                            .font(.caption)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(markedMaterial.markings.contains(marking) ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
+                                            .cornerRadius(4)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
                             }
-                            .padding(8)
+                            .padding(10)
                             .background(Color(nsColor: .controlBackgroundColor))
-                            .cornerRadius(6)
+                            .cornerRadius(8)
                         }
                     }
                 }
             }
             .padding()
+        }
+    }
+    
+    private func toggleMarking(for id: UUID, marking: FileMarking, isMaterial: Bool) {
+        if isMaterial {
+            if let index = markedMaterials.firstIndex(where: { $0.id == id }) {
+                if markedMaterials[index].markings.contains(marking) {
+                    markedMaterials[index].markings.remove(marking)
+                } else {
+                    markedMaterials[index].markings.insert(marking)
+                }
+            }
+        } else {
+            if let index = markedFiles.firstIndex(where: { $0.id == id }) {
+                if markedFiles[index].markings.contains(marking) {
+                    markedFiles[index].markings.remove(marking)
+                } else {
+                    markedFiles[index].markings.insert(marking)
+                }
+            }
         }
     }
     
@@ -177,12 +250,12 @@ struct SmartGradingView: View {
                 }
             } else {
                 Button {
-                    startGrading()
+                    validateAndStartGrading()
                 } label: {
                     Label("开始阅卷", systemImage: "checkmark.circle.fill")
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(selectedFiles.isEmpty && selectedMaterials.isEmpty)
+                .disabled(markedFiles.isEmpty && markedMaterials.isEmpty)
             }
             
             Spacer()
@@ -354,11 +427,51 @@ struct SmartGradingView: View {
     private func handleFileImport(_ result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
-            selectedFiles.append(contentsOf: urls)
+            for url in urls {
+                let markedFile = MarkedFile(url: url, markings: [], content: nil)
+                markedFiles.append(markedFile)
+            }
         case .failure(let error):
             appState.errorMessage = error.localizedDescription
             appState.showError = true
         }
+    }
+    
+    private func validateAndStartGrading() {
+        var hasUserAnswer = false
+        var hasOriginalOrAnswer = false
+        
+        for markedFile in markedFiles {
+            if markedFile.markings.contains(.userAnswer) {
+                hasUserAnswer = true
+            }
+            if markedFile.markings.contains(.originalQuestion) || markedFile.markings.contains(.standardAnswer) {
+                hasOriginalOrAnswer = true
+            }
+        }
+        
+        for markedMaterial in markedMaterials {
+            if markedMaterial.markings.contains(.userAnswer) {
+                hasUserAnswer = true
+            }
+            if markedMaterial.markings.contains(.originalQuestion) || markedMaterial.markings.contains(.standardAnswer) {
+                hasOriginalOrAnswer = true
+            }
+        }
+        
+        if !hasUserAnswer {
+            validationErrorMessage = "请至少标记一个文件为「用户回答」"
+            showValidationError = true
+            return
+        }
+        
+        if !hasOriginalOrAnswer {
+            validationErrorMessage = "请至少标记一个文件为「原题」或「标准答案」"
+            showValidationError = true
+            return
+        }
+        
+        startGrading()
     }
     
     private func startGrading() {
@@ -368,20 +481,63 @@ struct SmartGradingView: View {
         Task {
             await extractAllTexts()
             
-            let prompt = """
-            请批改以下作业/试卷，并给出详细的分析和评价。
+            var userAnswerContent = ""
+            var originalQuestionContent = ""
+            var standardAnswerContent = ""
             
-            学生作业内容：
-            \(extractedTexts.joined(separator: "\n\n---\n\n"))
+            for (content, markings) in extractedTexts {
+                if markings.contains(.userAnswer) {
+                    userAnswerContent += content + "\n\n"
+                }
+                if markings.contains(.originalQuestion) {
+                    originalQuestionContent += content + "\n\n"
+                }
+                if markings.contains(.standardAnswer) {
+                    standardAnswerContent += content + "\n\n"
+                }
+            }
             
-            请按以下格式回复：
-            1. 总体评价
-            2. 正确题目及解析
-            3. 错误题目及解析
-            4. 改进建议
+            let hasStandardAnswer = !standardAnswerContent.isEmpty
             
-            请用中文回复，使用 Markdown 格式。
-            """
+            var prompt = ""
+            if hasStandardAnswer {
+                prompt = """
+                请严格按照以下标准答案批改学生作业。
+                
+                【标准答案】
+                \(standardAnswerContent)
+                
+                【学生回答】
+                \(userAnswerContent)
+                
+                请按以下格式回复：
+                1. 总体评价（按标准答案给分）
+                2. 每题得分及详细扣分原因
+                3. 正确题目及解析
+                4. 错误题目及解析
+                5. 改进建议
+                
+                请用中文回复，使用 Markdown 格式。
+                """
+            } else {
+                prompt = """
+                请批改以下作业/试卷，并给出详细的分析和评价。
+                
+                【原题】
+                \(originalQuestionContent)
+                
+                【学生回答】
+                \(userAnswerContent)
+                
+                请按以下格式回复：
+                1. 总体评价
+                2. 正确题目及解析
+                3. 错误题目及解析
+                4. 改进建议
+                
+                请用中文回复，使用 Markdown 格式。
+                """
+            }
             
             do {
                 try await appState.llmService.sendMessageStreaming(system: "你是一个专业的老师，请仔细批改作业并给出详细的反馈。", user: prompt) { chunk in
@@ -405,16 +561,16 @@ struct SmartGradingView: View {
     private func extractAllTexts() async {
         extractedTexts = []
         
-        for file in selectedFiles {
-            if let text = extractTextFromFile(file) {
-                extractedTexts.append(text)
+        for markedFile in markedFiles {
+            if let text = extractTextFromFile(markedFile.url) {
+                extractedTexts.append((text, markedFile.markings))
             }
         }
         
-        for material in selectedMaterials {
-            let text = material.extractedText ?? material.content
+        for markedMaterial in markedMaterials {
+            let text = markedMaterial.material.extractedText ?? markedMaterial.material.content
             if !text.isEmpty {
-                extractedTexts.append("【\(material.name)】\n\(text)")
+                extractedTexts.append((text, markedMaterial.markings))
             }
         }
     }
@@ -433,8 +589,8 @@ struct SmartGradingView: View {
     }
     
     private func resetGrading() {
-        selectedFiles.removeAll()
-        selectedMaterials.removeAll()
+        markedFiles.removeAll()
+        markedMaterials.removeAll()
         gradingResult = ""
         extractedTexts.removeAll()
         explanationResult = ""
@@ -596,7 +752,7 @@ struct SmartGradingView: View {
 
 struct MaterialPickerSheet: View {
     @EnvironmentObject var appState: AppState
-    @Binding var selectedMaterials: [StudyMaterial]
+    @Binding var markedMaterials: [MarkedMaterial]
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -611,26 +767,44 @@ struct MaterialPickerSheet: View {
             }
             
             List(appState.materials) { material in
-                HStack {
-                    Image(systemName: material.type.icon)
-                    VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: material.type.icon)
                         Text(material.name)
-                        Text(material.category.rawValue)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        Spacer()
+                        if markedMaterials.contains(where: { $0.material.id == material.id }) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                        }
                     }
-                    Spacer()
-                    if selectedMaterials.contains(where: { $0.id == material.id }) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
+                    
+                    if let marked = markedMaterials.first(where: { $0.material.id == material.id }) {
+                        HStack(spacing: 8) {
+                            ForEach(FileMarking.allCases) { marking in
+                                Button {
+                                    toggleMarking(for: material, marking: marking)
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: marked.markings.contains(marking) ? "checkmark.circle.fill" : "circle")
+                                        Text(marking.rawValue)
+                                    }
+                                    .font(.caption)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 3)
+                                    .background(marked.markings.contains(marking) ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
+                                    .cornerRadius(4)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
                     }
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    if selectedMaterials.contains(where: { $0.id == material.id }) {
-                        selectedMaterials.removeAll { $0.id == material.id }
+                    if let index = markedMaterials.firstIndex(where: { $0.material.id == material.id }) {
+                        markedMaterials.remove(at: index)
                     } else {
-                        selectedMaterials.append(material)
+                        markedMaterials.append(MarkedMaterial(material: material, markings: []))
                     }
                 }
             }
@@ -641,6 +815,49 @@ struct MaterialPickerSheet: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
-        .frame(width: 400, height: 500)
+        .frame(width: 450, height: 500)
+    }
+    
+    private func toggleMarking(for material: StudyMaterial, marking: FileMarking) {
+        if let index = markedMaterials.firstIndex(where: { $0.material.id == material.id }) {
+            if markedMaterials[index].markings.contains(marking) {
+                markedMaterials[index].markings.remove(marking)
+            } else {
+                markedMaterials[index].markings.insert(marking)
+            }
+        }
+    }
+}
+
+enum FileMarking: String, CaseIterable, Identifiable {
+    case userAnswer = "用户回答"
+    case originalQuestion = "原题"
+    case standardAnswer = "标准答案"
+    
+    var id: String { rawValue }
+}
+
+struct MarkedFile: Identifiable {
+    let id = UUID()
+    let url: URL
+    var markings: Set<FileMarking>
+    var content: String?
+    
+    var fileName: String {
+        url.lastPathComponent
+    }
+    
+    var fileExtension: String {
+        url.pathExtension.lowercased()
+    }
+}
+
+struct MarkedMaterial: Identifiable {
+    let id = UUID()
+    let material: StudyMaterial
+    var markings: Set<FileMarking>
+    
+    var materialName: String {
+        material.name
     }
 }
