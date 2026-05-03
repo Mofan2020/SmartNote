@@ -20,6 +20,22 @@ class StorageService {
         appSupportDirectory.appendingPathComponent("learningProfile.json")
     }
     
+    private var pdfAnnotationsFileURL: URL {
+        appSupportDirectory.appendingPathComponent("pdfAnnotations.json")
+    }
+    
+    private var studySessionsFileURL: URL {
+        appSupportDirectory.appendingPathComponent("studySessions.json")
+    }
+    
+    private var wrongQuestionsFileURL: URL {
+        appSupportDirectory.appendingPathComponent("wrongQuestions.json")
+    }
+    
+    private var flashCardsFileURL: URL {
+        appSupportDirectory.appendingPathComponent("flashCards.json")
+    }
+    
     init() {
         let paths = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)
         appSupportDirectory = paths.first!.appendingPathComponent("SmartNote")
@@ -59,6 +75,51 @@ class StorageService {
     
     func loadLearningProfile() -> UserLearningProfile {
         load(from: learningProfileFileURL) ?? UserLearningProfile()
+    }
+    
+    func savePDFAnnotations(_ annotations: [UUID: PDFAnnotationsData]) {
+        var simplifiedAnnotations: [String: PDFAnnotationsData] = [:]
+        for (key, value) in annotations {
+            simplifiedAnnotations[key.uuidString] = value
+        }
+        save(simplifiedAnnotations, to: pdfAnnotationsFileURL)
+    }
+    
+    func loadPDFAnnotations() -> [UUID: PDFAnnotationsData] {
+        let loaded: [String: PDFAnnotationsData]? = load(from: pdfAnnotationsFileURL)
+        guard let loaded = loaded else { return [:] }
+        
+        var result: [UUID: PDFAnnotationsData] = [:]
+        for (key, value) in loaded {
+            if let uuid = UUID(uuidString: key) {
+                result[uuid] = value
+            }
+        }
+        return result
+    }
+    
+    func saveStudySessions(_ sessions: [StudySession]) {
+        save(sessions, to: studySessionsFileURL)
+    }
+    
+    func loadStudySessions() -> [StudySession] {
+        return load(from: studySessionsFileURL) ?? []
+    }
+    
+    func saveWrongQuestions(_ questions: [WrongQuestion]) {
+        save(questions, to: wrongQuestionsFileURL)
+    }
+    
+    func loadWrongQuestions() -> [WrongQuestion] {
+        return load(from: wrongQuestionsFileURL) ?? []
+    }
+    
+    func saveFlashCards(_ cards: [FlashCard]) {
+        save(cards, to: flashCardsFileURL)
+    }
+    
+    func loadFlashCards() -> [FlashCard] {
+        return load(from: flashCardsFileURL) ?? []
     }
     
     private func save<T: Encodable>(_ object: T, to url: URL) {
@@ -132,6 +193,9 @@ struct AppSettings: Codable, Equatable {
     var defaultStudyMinutes: Int = 30
     var showFileExtensions: Bool = true
     var llmConfiguration: LLMConfiguration = LLMConfiguration()
+    var pomodoroWorkDuration: Int = 25
+    var pomodoroBreakDuration: Int = 5
+    var examCountdowns: [ExamCountdown] = []
     
     enum DarkModePreference: String, Codable, Equatable {
         case system

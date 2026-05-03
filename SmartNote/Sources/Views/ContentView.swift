@@ -66,6 +66,32 @@ struct SidebarView: View {
                 NavigationLink(value: 8) {
                     Label("AI 对话", systemImage: "bubble.left.and.bubble.right.fill")
                 }
+                
+                NavigationLink(value: 10) {
+                    Label("番茄钟", systemImage: "timer")
+                }
+                
+                NavigationLink(value: 11) {
+                    Label("错题本", systemImage: "xmark.circle")
+                }
+                
+                NavigationLink(value: 12) {
+                    Label("背诵卡片", systemImage: "rectangle.stack")
+                }
+            }
+            
+            Section("工具") {
+                NavigationLink(value: 13) {
+                    Label("考试倒计时", systemImage: "calendar.badge.exclamationmark")
+                }
+                
+                NavigationLink(value: 14) {
+                    Label("重复清理", systemImage: "doc.on.doc")
+                }
+                
+                NavigationLink(value: 15) {
+                    Label("专注模式", systemImage: "moon.fill")
+                }
             }
             
             Section("统计") {
@@ -106,6 +132,18 @@ struct DetailView: View {
                 AIChatView()
             case 9:
                 SmartGradingView()
+            case 10:
+                PomodoroView()
+            case 11:
+                WrongQuestionView()
+            case 12:
+                FlashCardView()
+            case 13:
+                ExamCountdownView()
+            case 14:
+                DuplicateScannerView()
+            case 15:
+                FocusModeView()
             default:
                 MaterialsListView()
             }

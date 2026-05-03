@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智学笔记 - SmartNote</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .slide {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-header {
+            padding: 40px 48px 24px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .slide-header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+        }
+
+        .slide-header p {
+            font-size: 16px;
+            color: #86868b;
+            font-weight: 400;
+        }
+
+        .slide-content {
+            flex: 1;
+            padding: 32px 48px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .screenshot-container {
+            flex: 1;
+            background: #f5f5f7;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .features-list {
+            width: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .feature-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-item h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1d1d1f;
+            margin-bottom: 2px;
+        }
+
+        .feature-item p {
+            font-size: 12px;
+            color: #86868b;
+            line-height: 1.4;
+        }
+
+        .slide-footer {
+            padding: 20px 48px;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-footer .tagline {
+            font-size: 13px;
+            color: #86868b;
+        }
+
+        .tech-tags {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tech-tag {
+            font-size: 11px;
+            color: #86868b;
+            background: #f5f5f7;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="slide-header">
+            <h1>智学笔记</h1>
+            <p>macOS 大学生智能复习整合工具</p>
+        </div>
+        
+        <div class="slide-content">
+            <div class="screenshot-container">
+                <img src="img/show01.png" alt="智学笔记运行截图">
+            </div>
+            
+            <div class="features-list">
+                <div class="feature-item">
+                    <h3>资料管理</h3>
+                    <p>多源资料整合分类</p>
+                </div>
+                <div class="feature-item">
+                    <h3>OCR 识别</h3>
+                    <p>图片文字智能提取</p>
+                </div>
+                <div class="feature-item">
+                    <h3>AI 智能</h3>
+                    <p>对话、讲解、批改</p>
+                </div>
+                <div class="feature-item">
+                    <h3>复习计划</h3>
+                    <p>艾宾浩斯遗忘曲线</p>
+                </div>
+                <div class="feature-item">
+                    <h3>语音朗读</h3>
+                    <p>macOS 原生语音</p>
+                </div>
+                <div class="feature-item">
+                    <h3>PDF 导出</h3>
+                    <p>知识点一键导出</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-footer">
+            <div class="tagline">让学习更智能，让复习更高效</div>
+            <div class="tech-tags">
+                <span class="tech-tag">SwiftUI</span>
+                <span class="tech-tag">VisionKit</span>
+                <span class="tech-tag">AI</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -14,6 +14,7 @@ class AppState: ObservableObject {
     @Published var extractedKeywords: [String] = []
     @Published var aiAnalysisResult: String = ""
     @Published var reviewPlans: [ReviewPlan] = []
+    @Published var examCountdowns: [ExamCountdown] = []
     @Published var searchText: String = ""
     @Published var errorMessage: String?
     @Published var showError: Bool = false
@@ -47,6 +48,7 @@ class AppState: ObservableObject {
     func loadSavedData() {
         materials = storageService.loadMaterials()
         reviewPlans = storageService.loadReviewPlans()
+        examCountdowns = storageService.loadSettings().examCountdowns
     }
     
     func importFiles(_ urls: [URL]) {
