@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FocusModeView: View {
-    @State private var isFocusModeActive = false
+    @StateObject private var focusService = FocusModeService.shared
     @State private var showTimerPicker = false
     @State private var focusDuration: Int = 25
     @State private var timer: Timer?
@@ -13,26 +13,26 @@ struct FocusModeView: View {
             
             ZStack {
                 Circle()
-                    .fill(isFocusModeActive ? Color.red.opacity(0.1) : Color.gray.opacity(0.1))
+                    .fill(focusService.isActive ? Color.red.opacity(0.1) : Color.gray.opacity(0.1))
                     .frame(width: 200, height: 200)
                 
-                Image(systemName: isFocusModeActive ? "moon.fill" : "moon")
+                Image(systemName: focusService.isActive ? "moon.fill" : "moon")
                     .font(.system(size: 80))
-                    .foregroundColor(isFocusModeActive ? .red : .gray)
+                    .foregroundColor(focusService.isActive ? .red : .gray)
             }
             
             VStack(spacing: 8) {
-                Text(isFocusModeActive ? "专注模式已开启" : "专注模式")
+                Text(focusService.isActive ? "专注模式已开启" : "专注模式")
                     .font(.title)
                     .fontWeight(.bold)
                 
-                Text(isFocusModeActive ? remainingTimeString : "点击下方按钮开始专注")
+                Text(focusService.isActive ? remainingTimeString : "点击下方按钮开始专注")
                     .font(.title2)
                     .foregroundColor(.secondary)
             }
             
             HStack(spacing: 20) {
-                if isFocusModeActive {
+                if focusService.isActive {
                     Button {
                         exitFocusMode()
                     } label: {
@@ -82,10 +82,10 @@ struct FocusModeView: View {
                 .font(.headline)
             
             VStack(alignment: .leading, spacing: 8) {
-                FocusFeatureRow(icon: "bell.slash", text: "自动开启勿扰模式")
-                FocusFeatureRow(icon: "desktopcomputer", text: "隐藏桌面图标")
-                FocusFeatureRow(icon: "rectangle.on.rectangle.slash", text: "屏蔽无关应用通知")
-                FocusFeatureRow(icon: "lock.fill", text: "锁定软件全屏")
+                FocusFeatureRow(icon: "bell.slash.fill", text: "开启勿扰模式，屏蔽所有通知")
+                FocusFeatureRow(icon: "desktopcomputer", text: "隐藏桌面图标，减少干扰")
+                FocusFeatureRow(icon: "rectangle.on.rectangle.slash", text: "专注当前应用，提高效率")
+                FocusFeatureRow(icon: "lock.fill", text: "专注结束后自动恢复系统设置")
             }
         }
         .padding()
@@ -118,10 +118,9 @@ struct FocusModeView: View {
     }
     
     private func enterFocusMode() {
-        isFocusModeActive = true
-        remainingSeconds = focusDuration * 60
+        focusService.enable()
         
-        enableSystemFocusMode()
+        remainingSeconds = focusDuration * 60
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if remainingSeconds > 0 {
@@ -135,18 +134,9 @@ struct FocusModeView: View {
     private func exitFocusMode() {
         timer?.invalidate()
         timer = nil
-        isFocusModeActive = false
         remainingSeconds = 0
         
-        disableSystemFocusMode()
-    }
-    
-    private func enableSystemFocusMode() {
-        print("macOS Focus Mode enabled")
-    }
-    
-    private func disableSystemFocusMode() {
-        print("macOS Focus Mode disabled")
+        focusService.disable()
     }
 }
 
