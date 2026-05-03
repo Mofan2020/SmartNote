@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		01278A3F060B847D549DDE83 /* LLMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F332C2BF2D9E8D571CB00EFA /* LLMSettingsView.swift */; };
+		0990FA182FA7167A00C18F20 /* FocusModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0990FA172FA7167900C18F20 /* FocusModeService.swift */; };
 		137C3BB73D6E4E4BBFCBFD50 /* DuplicateScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84839B0FC350C553762798B0 /* DuplicateScannerView.swift */; };
 		2F98FE09BB19688189632973 /* StudyMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54F87F628B7AE589BEFF23D /* StudyMaterial.swift */; };
 		329452853E950533BAE8A7C3 /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DB2C22BCC415B73BF84A48 /* PomodoroTimer.swift */; };
@@ -61,6 +62,7 @@
 /* Begin PBXFileReference section */
 		01A74D231E413B5F996B5308 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		01B9E1AAB643D41A88EFF1E8 /* PDFAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFAnnotation.swift; sourceTree = "<group>"; };
+		0990FA172FA7167900C18F20 /* FocusModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusModeService.swift; sourceTree = "<group>"; };
 		0E57E6AD3AF6399A1E7F4E50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		12987FCC65DCD2D306F5CCB3 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		183A64BA18C98E763E093D8C /* UserLearningProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLearningProfile.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				52DB2C22BCC415B73BF84A48 /* PomodoroTimer.swift */,
 				3157E15A32FE4D1A505F6ED5 /* SpeechService.swift */,
 				12987FCC65DCD2D306F5CCB3 /* StorageService.swift */,
+				0990FA172FA7167900C18F20 /* FocusModeService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 				BDE72A44A8EEA5D1556594A4 /* OCRService.swift in Sources */,
 				A04052BAA18BF67F53334614 /* PDFAnnotation.swift in Sources */,
 				FB568611ABDCD521EC8C1FC2 /* PDFAnnotationService.swift in Sources */,
+				0990FA182FA7167A00C18F20 /* FocusModeService.swift in Sources */,
 				A6538E9AE726EB1B6A0A139A /* PDFAnnotationView.swift in Sources */,
 				5A11D0F9260737C7E1A00140 /* PDFService.swift in Sources */,
 				329452853E950533BAE8A7C3 /* PomodoroTimer.swift in Sources */,
