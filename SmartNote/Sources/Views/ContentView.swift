@@ -96,6 +96,10 @@ struct SidebarView: View {
                 NavigationLink(value: 16) {
                     Label("P2P 社交", systemImage: "bubble.left.and.bubble.right.fill")
                 }
+                
+                NavigationLink(value: 17) {
+                    Label("放松亿下", systemImage: "gamecontroller")
+                }
             }
             
             Section("统计") {
@@ -150,6 +154,8 @@ struct DetailView: View {
                 FocusModeView()
             case 16:
                 P2PSocialView()
+            case 17:
+                RelaxGameView()
             default:
                 MaterialsListView()
             }
