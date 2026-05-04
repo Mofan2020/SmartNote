@@ -1,0 +1,203 @@
+import Foundation
+
+struct P2PUserIdentity: Codable, Identifiable {
+    let id: UUID
+    var nickname: String
+    var avatarData: Data?
+    var signature: String
+    var publicKey: String
+    var privateKeyRef: String
+    var keyFingerprint: String
+    var ipv6Address: String
+    var port: Int
+    var createdAt: Date
+    var updatedAt: Date
+    
+    init(
+        id: UUID = UUID(),
+        nickname: String,
+        avatarData: Data? = nil,
+        signature: String = "",
+        publicKey: String = "",
+        privateKeyRef: String = "",
+        keyFingerprint: String = "",
+        ipv6Address: String = "",
+        port: Int = 0,
+        createdAt: Date = Date(),
+        updatedAt: Date = Date()
+    ) {
+        self.id = id
+        self.nickname = nickname
+        self.avatarData = avatarData
+        self.signature = signature
+        self.publicKey = publicKey
+        self.privateKeyRef = privateKeyRef
+        self.keyFingerprint = keyFingerprint
+        self.ipv6Address = ipv6Address
+        self.port = port
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+}
+
+struct P2PFriend: Codable, Identifiable {
+    let id: UUID
+    var nickname: String
+    var remark: String
+    var ipv6Address: String
+    var port: Int
+    var publicKey: String
+    var avatarData: Data?
+    var status: FriendStatus
+    var addedAt: Date
+    var lastMessageAt: Date?
+    var lastMessagePreview: String?
+    
+    enum FriendStatus: String, Codable {
+        case online
+        case offline
+        case focusing
+    }
+    
+    init(
+        id: UUID = UUID(),
+        nickname: String,
+        remark: String = "",
+        ipv6Address: String,
+        port: Int,
+        publicKey: String,
+        avatarData: Data? = nil,
+        status: FriendStatus = .offline,
+        addedAt: Date = Date(),
+        lastMessageAt: Date? = nil,
+        lastMessagePreview: String? = nil
+    ) {
+        self.id = id
+        self.nickname = nickname
+        self.remark = remark
+        self.ipv6Address = ipv6Address
+        self.port = port
+        self.publicKey = publicKey
+        self.avatarData = avatarData
+        self.status = status
+        self.addedAt = addedAt
+        self.lastMessageAt = lastMessageAt
+        self.lastMessagePreview = lastMessagePreview
+    }
+}
+
+struct P2PChatMessage: Codable, Identifiable {
+    let id: UUID
+    var friendID: UUID
+    var content: String
+    var isSent: Bool
+    var status: MessageStatus
+    var timestamp: Date
+    var type: MessageType
+    
+    enum MessageStatus: String, Codable {
+        case sending
+        case sent
+        case delivered
+        case failed
+    }
+    
+    enum MessageType: String, Codable {
+        case text
+        case file
+        case status
+        case system
+    }
+    
+    init(
+        id: UUID = UUID(),
+        friendID: UUID,
+        content: String,
+        isSent: Bool,
+        status: MessageStatus = .sending,
+        timestamp: Date = Date(),
+        type: MessageType = .text
+    ) {
+        self.id = id
+        self.friendID = friendID
+        self.content = content
+        self.isSent = isSent
+        self.status = status
+        self.timestamp = timestamp
+        self.type = type
+    }
+}
+
+struct P2PFileTransfer: Codable, Identifiable {
+    let id: UUID
+    var friendID: UUID
+    var fileName: String
+    var fileSize: Int64
+    var fileType: String
+    var localPath: String?
+    var isOutgoing: Bool
+    var status: TransferStatus
+    var progress: Double
+    var startedAt: Date
+    var completedAt: Date?
+    
+    enum TransferStatus: String, Codable {
+        case pending
+        case transferring
+        case paused
+        case completed
+        case failed
+        case cancelled
+    }
+    
+    init(
+        id: UUID = UUID(),
+        friendID: UUID,
+        fileName: String,
+        fileSize: Int64,
+        fileType: String,
+        localPath: String? = nil,
+        isOutgoing: Bool,
+        status: TransferStatus = .pending,
+        progress: Double = 0,
+        startedAt: Date = Date(),
+        completedAt: Date? = nil
+    ) {
+        self.id = id
+        self.friendID = friendID
+        self.fileName = fileName
+        self.fileSize = fileSize
+        self.fileType = fileType
+        self.localPath = localPath
+        self.isOutgoing = isOutgoing
+        self.status = status
+        self.progress = progress
+        self.startedAt = startedAt
+        self.completedAt = completedAt
+    }
+}
+
+struct P2PBlackIP: Codable, Identifiable {
+    let id: UUID
+    var ipv6Address: String
+    var reason: String
+    var blockedAt: Date
+    
+    init(
+        id: UUID = UUID(),
+        ipv6Address: String,
+        reason: String = "",
+        blockedAt: Date = Date()
+    ) {
+        self.id = id
+        self.ipv6Address = ipv6Address
+        self.reason = reason
+        self.blockedAt = blockedAt
+    }
+}
+
+enum UserStatus: String, Codable {
+    case online
+    case focusing
+    case offline
+}

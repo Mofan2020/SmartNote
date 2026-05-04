@@ -92,6 +92,10 @@ struct SidebarView: View {
                 NavigationLink(value: 15) {
                     Label("专注模式", systemImage: "moon.fill")
                 }
+                
+                NavigationLink(value: 16) {
+                    Label("P2P 社交", systemImage: "bubble.left.and.bubble.right.fill")
+                }
             }
             
             Section("统计") {
@@ -144,6 +148,8 @@ struct DetailView: View {
                 DuplicateScannerView()
             case 15:
                 FocusModeView()
+            case 16:
+                P2PSocialView()
             default:
                 MaterialsListView()
             }

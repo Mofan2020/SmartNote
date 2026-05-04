@@ -122,6 +122,54 @@ class StorageService {
         return load(from: flashCardsFileURL) ?? []
     }
     
+    private var p2pIdentityFileURL: URL {
+        appSupportDirectory.appendingPathComponent("p2pIdentity.json")
+    }
+    
+    private var p2pFriendsFileURL: URL {
+        appSupportDirectory.appendingPathComponent("p2pFriends.json")
+    }
+    
+    private var p2pBlackListFileURL: URL {
+        appSupportDirectory.appendingPathComponent("p2pBlackList.json")
+    }
+    
+    func saveP2PIdentity(_ identity: P2PUserIdentity) {
+        save(identity, to: p2pIdentityFileURL)
+    }
+    
+    func loadP2PIdentity() -> P2PUserIdentity? {
+        return load(from: p2pIdentityFileURL)
+    }
+    
+    func deleteP2PIdentity() {
+        try? FileManager.default.removeItem(at: p2pIdentityFileURL)
+    }
+    
+    func saveP2PFriends(_ friends: [P2PFriend]) {
+        save(friends, to: p2pFriendsFileURL)
+    }
+    
+    func loadP2PFriends() -> [P2PFriend] {
+        return load(from: p2pFriendsFileURL) ?? []
+    }
+    
+    func deleteAllP2PFriends() {
+        try? FileManager.default.removeItem(at: p2pFriendsFileURL)
+    }
+    
+    func saveP2PBlackList(_ blackList: [P2PBlackIP]) {
+        save(blackList, to: p2pBlackListFileURL)
+    }
+    
+    func loadP2PBlackList() -> [P2PBlackIP] {
+        return load(from: p2pBlackListFileURL) ?? []
+    }
+    
+    func deleteP2PBlackList() {
+        try? FileManager.default.removeItem(at: p2pBlackListFileURL)
+    }
+    
     private func save<T: Encodable>(_ object: T, to url: URL) {
         do {
             let encoder = JSONEncoder()
@@ -196,6 +244,7 @@ struct AppSettings: Codable, Equatable {
     var pomodoroWorkDuration: Int = 25
     var pomodoroBreakDuration: Int = 5
     var examCountdowns: [ExamCountdown] = []
+    var p2pBackgroundEnabled: Bool = false
     
     enum DarkModePreference: String, Codable, Equatable {
         case system

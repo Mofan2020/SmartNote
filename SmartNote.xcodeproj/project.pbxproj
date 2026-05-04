@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		01278A3F060B847D549DDE83 /* LLMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F332C2BF2D9E8D571CB00EFA /* LLMSettingsView.swift */; };
-		0990FA182FA7167A00C18F20 /* FocusModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0990FA172FA7167900C18F20 /* FocusModeService.swift */; };
+		06DDF901E2848FD484DD0C57 /* FocusModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC170FA87CD834A81E9A4CC8 /* FocusModeService.swift */; };
+		0CB88EC66EFF82034EC22064 /* P2PService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35933360A6AA6EE2A69BEFD4 /* P2PService.swift */; };
 		137C3BB73D6E4E4BBFCBFD50 /* DuplicateScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84839B0FC350C553762798B0 /* DuplicateScannerView.swift */; };
 		2F98FE09BB19688189632973 /* StudyMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54F87F628B7AE589BEFF23D /* StudyMaterial.swift */; };
 		329452853E950533BAE8A7C3 /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DB2C22BCC415B73BF84A48 /* PomodoroTimer.swift */; };
@@ -25,6 +26,7 @@
 		65F6A70AAF8886E06BCA9D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0E57E6AD3AF6399A1E7F4E50 /* Assets.xcassets */; };
 		67621F51E84AAAA8AB0E2627 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8C1B44A2A61CA79BD48879 /* ContentView.swift */; };
 		6BEAC51EFE84A910F12692E9 /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C4DEA6DDBE484CB505052 /* CalendarService.swift */; };
+		719E56A223EC013911943F9E /* P2PCryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0C0B9F554192EC67B33B58 /* P2PCryptoService.swift */; };
 		779CC755CC9ECB20892847C1 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EE24BB16C4F533244DA72D /* StatusBarView.swift */; };
 		7BBD0FACD5978D7ECF7703FE /* ExamCountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D77772B153256013321672 /* ExamCountdownView.swift */; };
 		7E21801EB2DB6F679E2C20F0 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12987FCC65DCD2D306F5CCB3 /* StorageService.swift */; };
@@ -32,6 +34,8 @@
 		802B980AB4E7AB89C3E34CC0 /* FocusModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43014842DCDF52D74827ACFE /* FocusModeView.swift */; };
 		83C6C4978B69312028ECEAE9 /* SpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3157E15A32FE4D1A505F6ED5 /* SpeechService.swift */; };
 		86654172C280D417E594730D /* MaterialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B7484EF8E90D3649A6A5FA /* MaterialsListView.swift */; };
+		8A18D613355C9D48767099C6 /* P2PCreateIdentityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE4AC128765C446DF922DCB /* P2PCreateIdentityView.swift */; };
+		8C441C29A6D80A32A928C786 /* P2PSocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D0E79C54C3F1A34CD32B6E /* P2PSocialView.swift */; };
 		96E3AA1638583660A537C17C /* SmartNoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A56F3D9C89D292DF37A1E7 /* SmartNoteApp.swift */; };
 		A04052BAA18BF67F53334614 /* PDFAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B9E1AAB643D41A88EFF1E8 /* PDFAnnotation.swift */; };
 		A6538E9AE726EB1B6A0A139A /* PDFAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E52D5CE99C2649DE472BDD06 /* PDFAnnotationView.swift */; };
@@ -42,7 +46,11 @@
 		B3FEF150B1EA9E2B81679BB2 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9153CA3BAB1A98A91814C442 /* Components.swift */; };
 		BB948A6D3AE4669685CE4F77 /* WrongQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2679F36366EF4AB15F14DAD /* WrongQuestionView.swift */; };
 		BDE72A44A8EEA5D1556594A4 /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEEF4F30835C4BD18D390FD /* OCRService.swift */; };
+		BFA43AC7E399FE8ADFB72357 /* P2PModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095FA7C50DFB7734ED797E8D /* P2PModels.swift */; };
+		C8E9BAE70F67DE4856F1BC45 /* P2PNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AD75CCE073CFD5DDE5346A /* P2PNetworkService.swift */; };
+		CB2E8527A33C99E031379221 /* P2PSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8A0D5710EFF14D4DCAEDD9 /* P2PSettingsView.swift */; };
 		CDCD8F44AA0129195F260CA0 /* FileScannerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6800551BD3F4E594202A9C63 /* FileScannerService.swift */; };
+		CFE3C567BC505E93A8FA5E4A /* P2PAddFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CD2DA9C12FD47108F0A6DC /* P2PAddFriendView.swift */; };
 		D2CFCA396F589555E60DBF67 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EFEE65AEF8F68B4C6D2F6 /* ExportService.swift */; };
 		D3AF9A33FA1E726319056CEC /* ExamCountdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF69A8C2FBED9C695F7D3F91 /* ExamCountdown.swift */; };
 		DB19809F6256C815578661E3 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BC77FB3E08F3B092FDE4BA /* PomodoroView.swift */; };
@@ -50,6 +58,7 @@
 		E38E22182C6E3505A22E7BCF /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1E5B0EE3EA703F874316BC /* MaterialDetailView.swift */; };
 		E5FE28187FFF047A3A7D2AFE /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8589B9024F0431513B5331FE /* FlowLayout.swift */; };
 		E6313AD984EC773F2474EF1D /* AIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BF99288F70ED636D3AAB01 /* AIChatView.swift */; };
+		E80FE8723B16A857F3991A5D /* P2PChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E90171FD20FC35D9B433345 /* P2PChatView.swift */; };
 		ED76B8DD4128726DB1ECE13A /* ReviewPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3227CDBCFE8A5C9B904F8 /* ReviewPlanView.swift */; };
 		EF6FDF917407F1948B782F62 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A74D231E413B5F996B5308 /* NotificationService.swift */; };
 		F50B5F6181F691E1DF61BDFA /* FlashCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2A1ABC3F53C6BD569E7B9A /* FlashCardView.swift */; };
@@ -62,18 +71,23 @@
 /* Begin PBXFileReference section */
 		01A74D231E413B5F996B5308 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		01B9E1AAB643D41A88EFF1E8 /* PDFAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFAnnotation.swift; sourceTree = "<group>"; };
-		0990FA172FA7167900C18F20 /* FocusModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusModeService.swift; sourceTree = "<group>"; };
+		095FA7C50DFB7734ED797E8D /* P2PModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PModels.swift; sourceTree = "<group>"; };
 		0E57E6AD3AF6399A1E7F4E50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		12987FCC65DCD2D306F5CCB3 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		183A64BA18C98E763E093D8C /* UserLearningProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLearningProfile.swift; sourceTree = "<group>"; };
 		1B1163580FC0527F161967C0 /* MarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownView.swift; sourceTree = "<group>"; };
 		20D77772B153256013321672 /* ExamCountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCountdownView.swift; sourceTree = "<group>"; };
 		270C3E3C779EA0B469949129 /* FileImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileImportView.swift; sourceTree = "<group>"; };
+		2A0C0B9F554192EC67B33B58 /* P2PCryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PCryptoService.swift; sourceTree = "<group>"; };
 		3157E15A32FE4D1A505F6ED5 /* SpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechService.swift; sourceTree = "<group>"; };
 		35417BC62B272D7F6B24E2C7 /* PDFAnnotationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFAnnotationService.swift; sourceTree = "<group>"; };
+		35933360A6AA6EE2A69BEFD4 /* P2PService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PService.swift; sourceTree = "<group>"; };
+		3E90171FD20FC35D9B433345 /* P2PChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PChatView.swift; sourceTree = "<group>"; };
+		41D0E79C54C3F1A34CD32B6E /* P2PSocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PSocialView.swift; sourceTree = "<group>"; };
 		43014842DCDF52D74827ACFE /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusModeView.swift; sourceTree = "<group>"; };
 		48DD289F04C084C67319D15A /* SmartNote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartNote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52DB2C22BCC415B73BF84A48 /* PomodoroTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimer.swift; sourceTree = "<group>"; };
+		59AD75CCE073CFD5DDE5346A /* P2PNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PNetworkService.swift; sourceTree = "<group>"; };
 		5B8C1B44A2A61CA79BD48879 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6800551BD3F4E594202A9C63 /* FileScannerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileScannerService.swift; sourceTree = "<group>"; };
 		70EA20C8E3AFF5E8F5780261 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -88,7 +102,9 @@
 		92C67150FE8E22E2AEAC4C82 /* KeyPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyPointsView.swift; sourceTree = "<group>"; };
 		A1BF99288F70ED636D3AAB01 /* AIChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIChatView.swift; sourceTree = "<group>"; };
 		B6D3227CDBCFE8A5C9B904F8 /* ReviewPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPlanView.swift; sourceTree = "<group>"; };
+		B9CD2DA9C12FD47108F0A6DC /* P2PAddFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PAddFriendView.swift; sourceTree = "<group>"; };
 		B9CD98BF6A753ECF9FE0480B /* SmartGradingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartGradingView.swift; sourceTree = "<group>"; };
+		BB8A0D5710EFF14D4DCAEDD9 /* P2PSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PSettingsView.swift; sourceTree = "<group>"; };
 		BEF8E19044ACFD37E7466B8F /* LLMConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMConfiguration.swift; sourceTree = "<group>"; };
 		BF69A8C2FBED9C695F7D3F91 /* ExamCountdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCountdown.swift; sourceTree = "<group>"; };
 		C1CBA1BA3BF23D2680740DCD /* KeywordExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordExtractionService.swift; sourceTree = "<group>"; };
@@ -107,15 +123,24 @@
 		E16F5008A6E6C57E3DCF9CC0 /* FlashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCard.swift; sourceTree = "<group>"; };
 		E52D5CE99C2649DE472BDD06 /* PDFAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFAnnotationView.swift; sourceTree = "<group>"; };
 		EC14ECD3A7BAB1809B071A70 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		EC170FA87CD834A81E9A4CC8 /* FocusModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusModeService.swift; sourceTree = "<group>"; };
 		EDECE7F741B10883BAD49248 /* LearningAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearningAnalysisService.swift; sourceTree = "<group>"; };
 		EE1E56D223E7A85D761A70BA /* PDFService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFService.swift; sourceTree = "<group>"; };
 		F332C2BF2D9E8D571CB00EFA /* LLMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMSettingsView.swift; sourceTree = "<group>"; };
 		F3552CF8976544956A158CCD /* LLMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMService.swift; sourceTree = "<group>"; };
 		F4575EE9184B750B4B671582 /* CreateMaterialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMaterialView.swift; sourceTree = "<group>"; };
+		FCE4AC128765C446DF922DCB /* P2PCreateIdentityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P2PCreateIdentityView.swift; sourceTree = "<group>"; };
 		FD1E5B0EE3EA703F874316BC /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		27539AF4A4F7E9D89EFA5157 /* Social */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Social;
+			sourceTree = "<group>";
+		};
 		3A93B78F5AF552263BD3B9E7 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,17 +183,20 @@
 				83656D0505253324AD314B29 /* DuplicateScanner.swift */,
 				CB5EFEE65AEF8F68B4C6D2F6 /* ExportService.swift */,
 				6800551BD3F4E594202A9C63 /* FileScannerService.swift */,
+				EC170FA87CD834A81E9A4CC8 /* FocusModeService.swift */,
 				C1CBA1BA3BF23D2680740DCD /* KeywordExtractionService.swift */,
 				EDECE7F741B10883BAD49248 /* LearningAnalysisService.swift */,
 				F3552CF8976544956A158CCD /* LLMService.swift */,
 				01A74D231E413B5F996B5308 /* NotificationService.swift */,
 				CCEEF4F30835C4BD18D390FD /* OCRService.swift */,
+				2A0C0B9F554192EC67B33B58 /* P2PCryptoService.swift */,
+				59AD75CCE073CFD5DDE5346A /* P2PNetworkService.swift */,
+				35933360A6AA6EE2A69BEFD4 /* P2PService.swift */,
 				35417BC62B272D7F6B24E2C7 /* PDFAnnotationService.swift */,
 				EE1E56D223E7A85D761A70BA /* PDFService.swift */,
 				52DB2C22BCC415B73BF84A48 /* PomodoroTimer.swift */,
 				3157E15A32FE4D1A505F6ED5 /* SpeechService.swift */,
 				12987FCC65DCD2D306F5CCB3 /* StorageService.swift */,
-				0990FA172FA7167900C18F20 /* FocusModeService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -206,6 +234,11 @@
 				F332C2BF2D9E8D571CB00EFA /* LLMSettingsView.swift */,
 				FD1E5B0EE3EA703F874316BC /* MaterialDetailView.swift */,
 				75B7484EF8E90D3649A6A5FA /* MaterialsListView.swift */,
+				B9CD2DA9C12FD47108F0A6DC /* P2PAddFriendView.swift */,
+				3E90171FD20FC35D9B433345 /* P2PChatView.swift */,
+				FCE4AC128765C446DF922DCB /* P2PCreateIdentityView.swift */,
+				BB8A0D5710EFF14D4DCAEDD9 /* P2PSettingsView.swift */,
+				41D0E79C54C3F1A34CD32B6E /* P2PSocialView.swift */,
 				E52D5CE99C2649DE472BDD06 /* PDFAnnotationView.swift */,
 				C4BC77FB3E08F3B092FDE4BA /* PomodoroView.swift */,
 				B6D3227CDBCFE8A5C9B904F8 /* ReviewPlanView.swift */,
@@ -215,6 +248,7 @@
 				C6EE24BB16C4F533244DA72D /* StatusBarView.swift */,
 				C2679F36366EF4AB15F14DAD /* WrongQuestionView.swift */,
 				C96737D8EEF3BD72484731DB /* Components */,
+				27539AF4A4F7E9D89EFA5157 /* Social */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -233,6 +267,7 @@
 				BF69A8C2FBED9C695F7D3F91 /* ExamCountdown.swift */,
 				E16F5008A6E6C57E3DCF9CC0 /* FlashCard.swift */,
 				BEF8E19044ACFD37E7466B8F /* LLMConfiguration.swift */,
+				095FA7C50DFB7734ED797E8D /* P2PModels.swift */,
 				01B9E1AAB643D41A88EFF1E8 /* PDFAnnotation.swift */,
 				C7882398FAA6EDA889F8A4A6 /* ReviewPlan.swift */,
 				D54F87F628B7AE589BEFF23D /* StudyMaterial.swift */,
@@ -350,6 +385,7 @@
 				34D9205B28A70BBE00763929 /* FlashCard.swift in Sources */,
 				F50B5F6181F691E1DF61BDFA /* FlashCardView.swift in Sources */,
 				E5FE28187FFF047A3A7D2AFE /* FlowLayout.swift in Sources */,
+				06DDF901E2848FD484DD0C57 /* FocusModeService.swift in Sources */,
 				802B980AB4E7AB89C3E34CC0 /* FocusModeView.swift in Sources */,
 				7E55A9BF32BD91003C73C3D6 /* KeyPointsView.swift in Sources */,
 				5C108930AB66F5F867A1918B /* KeywordExtractionService.swift in Sources */,
@@ -363,9 +399,17 @@
 				86654172C280D417E594730D /* MaterialsListView.swift in Sources */,
 				EF6FDF917407F1948B782F62 /* NotificationService.swift in Sources */,
 				BDE72A44A8EEA5D1556594A4 /* OCRService.swift in Sources */,
+				CFE3C567BC505E93A8FA5E4A /* P2PAddFriendView.swift in Sources */,
+				E80FE8723B16A857F3991A5D /* P2PChatView.swift in Sources */,
+				8A18D613355C9D48767099C6 /* P2PCreateIdentityView.swift in Sources */,
+				719E56A223EC013911943F9E /* P2PCryptoService.swift in Sources */,
+				BFA43AC7E399FE8ADFB72357 /* P2PModels.swift in Sources */,
+				C8E9BAE70F67DE4856F1BC45 /* P2PNetworkService.swift in Sources */,
+				0CB88EC66EFF82034EC22064 /* P2PService.swift in Sources */,
+				CB2E8527A33C99E031379221 /* P2PSettingsView.swift in Sources */,
+				8C441C29A6D80A32A928C786 /* P2PSocialView.swift in Sources */,
 				A04052BAA18BF67F53334614 /* PDFAnnotation.swift in Sources */,
 				FB568611ABDCD521EC8C1FC2 /* PDFAnnotationService.swift in Sources */,
-				0990FA182FA7167A00C18F20 /* FocusModeService.swift in Sources */,
 				A6538E9AE726EB1B6A0A139A /* PDFAnnotationView.swift in Sources */,
 				5A11D0F9260737C7E1A00140 /* PDFService.swift in Sources */,
 				329452853E950533BAE8A7C3 /* PomodoroTimer.swift in Sources */,
@@ -463,7 +507,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skyc8266.smartnote;
 				PRODUCT_NAME = SmartNote;
 				SDKROOT = macosx;
@@ -486,7 +530,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skyc8266.smartnote;
 				PRODUCT_NAME = SmartNote;
 				SDKROOT = macosx;
