@@ -165,7 +165,7 @@ struct RelaxGameView: View {
     }
     
     private func loadAudioFiles() {
-        let audioDir = URL(fileURLWithPath: "/Users/mofan/Documents/MyProjects/Ciallo/Ciallo/AudioDefault/ciallo/")
+        let audioDir = Bundle.main.resourceURL?.appendingPathComponent("CialloAudio") ?? URL(fileURLWithPath: "")
         
         do {
             let files = try FileManager.default.contentsOfDirectory(at: audioDir, includingPropertiesForKeys: nil)
