@@ -341,10 +341,10 @@ class DinoGameEngine: ObservableObject {
     }
     
     private func checkCollisions() {
-        let dinoRect = CGRect(x: 50, y: dinoY, width: isDucking ? 50 : 40, height: isDucking ? 25 : 50)
+        let dinoRect = CGRect(x: 50, y: 200 + dinoY - (isDucking ? 25 : 50), width: isDucking ? 50 : 40, height: isDucking ? 25 : 50)
         
         for obstacle in obstacles {
-            let obstacleRect = CGRect(x: obstacle.x, y: obstacle.y, width: obstacle.width, height: obstacle.height)
+            let obstacleRect = CGRect(x: obstacle.x, y: 200 + obstacle.y - obstacle.height, width: obstacle.width, height: obstacle.height)
             
             if dinoRect.intersects(obstacleRect) {
                 isGameOver = true
@@ -399,10 +399,10 @@ struct DinoView: View {
             .resizable()
             .frame(width: 40, height: 50)
             .foregroundColor(.orange)
-            .offset(y: -y)
+            .offset(y: y)
             .scaleEffect(y: isJumping ? 1.1 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: isJumping)
-            .position(x: 70, y: 200 - y)
+            .position(x: 70, y: 200 + y)
     }
 }
 
@@ -424,7 +424,7 @@ struct ObstacleView: View {
             .resizable()
             .frame(width: obstacle.width, height: obstacle.height)
             .foregroundColor(obstacle.type == .cactus ? .green : .brown)
-            .position(x: obstacle.x, y: 200 - obstacle.y)
+            .position(x: obstacle.x, y: 200 + obstacle.y)
     }
 }
 
